@@ -5,11 +5,11 @@
 const std::string LumaVersion::toString(bool printBranch) const {
 	std::string currentVersionStr = release;
 	if (!commit.empty()) {
-		currentVersionStr += "-" + commit;
+		currentVersionStr; //"-";//+ commit;
 	}
-	if (printBranch && isDev) {
+	/*if (printBranch && isDev) {
 		currentVersionStr += " (dev)";
-	}
+	}*/
 	return currentVersionStr;
 }
 

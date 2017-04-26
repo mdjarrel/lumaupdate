@@ -79,7 +79,7 @@ ReleaseInfo releaseGetLatestStable() {
 				jsmntok_t val = t[i+1];
 				current.filename = std::string((const char*)apiReqData + val.start, val.end - val.start);
 				isDev = current.filename.find("-dev.") < std::string::npos;
-				current.friendlyName = isDev ? "developer version" : "normal version";
+				current.friendlyName = isDev ? "developer version" : "stable version";
 				verHasName = true;
 			}
 			if (jsoneq((const char*)apiReqData, &t[i], "browser_download_url") == 0) {

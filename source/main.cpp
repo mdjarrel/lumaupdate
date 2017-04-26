@@ -212,9 +212,9 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		consoleClear();
 		consolePrintHeader();
 
-		if (!usingConfig) {
+		/*if (!usingConfig) {
 			std::printf("  %sConfiguration not found, using default values%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
-		}
+		}*/
 
 		std::string payloadType;
 		switch (args.payloadType) {
@@ -257,8 +257,8 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 
 		if (haveLatestStable) {
 			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
-				? "\n  You seem to have the latest version already.\n"
-				: "\n  A new hourly build of Luma3DS is available.\n");
+				? "\n  You have the latest version.\n"
+				: "\n\n  A new hourly build of Luma3DS is available.\n");
 		} else {
 			std::printf("\n  A new stable version of Luma3DS is available.\n");
 		}
