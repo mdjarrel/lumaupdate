@@ -56,8 +56,8 @@ struct UpdateInfo {
 	bool         backupExists   = false;
 
 	// Configuration options
-	PayloadType  payloadType    = PayloadType::A9LH;
-	std::string  payloadPath    = "/arm9loaderhax.bin";
+	PayloadType  payloadType    = PayloadType::SIGHAX;
+	std::string  payloadPath    = "/boot.firm";
 	bool         backupExisting = true;
 	bool         selfUpdate     = true;
 	bool         writeLog       = true;
@@ -218,15 +218,15 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 
 		std::string payloadType;
 		switch (args.payloadType) {
-		case PayloadType::A9LH:
-			payloadType = "arm9loaderhax";
+		case PayloadType::SIGHAX:
+			payloadType = "sighax";
 			break;
-		case PayloadType::Menuhax:
+		/*case PayloadType::Menuhax:
 			payloadType = "Menuhax";
 			break;
 		case PayloadType::Homebrew:
 			payloadType = "Homebrew";
-			break;
+			break;*/
 		}
 
 		std::printf("  Payload type:   %s%s%s\n", CONSOLE_WHITE, payloadType.c_str(), CONSOLE_RESET);
@@ -519,19 +519,20 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Load config values
-	updateInfo.payloadPath = config.Get("payload path", DEFAULT_A9LH_PATH);
+	updateInfo.payloadPath = config.Get("payload path", DEFAULT_SIGHAX_PATH);
 	updateInfo.backupExisting = tolower(config.Get("backup", "y")[0]) == 'y';
 	updateInfo.selfUpdate = tolower(config.Get("selfupdate", "y")[0]) == 'y';
 	updateInfo.writeLog = tolower(config.Get("log enable", "y")[0]) == 'y';
 
-	payloadType = config.Get("payload type", "a9lh");
-	if (payloadType == "a9lh") {
-		updateInfo.payloadType = PayloadType::A9LH;
-	} else if (payloadType == "menuhax") {
+	payloadType = config.Get("payload type", "SIGHAX");
+	if (payloadType == "SIGHAX") {
+		updateInfo.payloadType = PayloadType::SIGHAX;
+	} 
+	/*if (payloadType == "menuhax") {
 		updateInfo.payloadType = PayloadType::Menuhax;
 	} else if (payloadType == "homebrew") {
 		updateInfo.payloadType = PayloadType::Homebrew;
-	} else {
+	}*/ else {
 		logPrintf("Unknown or wrong config value: '%s' for 'payload type'\n", payloadType.c_str());
 		gfxFlushBuffers();
 		WAIT_START

@@ -6,7 +6,7 @@
 #include "utils.h"
 
 static inline bool pathchange(u8* buf, const size_t bufSize, const std::string& path) {
-	const static char original[] = "sdmc:/arm9loaderhax.bin";
+	const static char original[] = "sdmc:/boot.firm";
 	const static size_t prefixSize = 12; // S \0 D \0 M \0 C \0 : \0 / \0
 	const static size_t originalSize = sizeof(original)/sizeof(char);
 	u8 pathLength = path.length();
@@ -49,7 +49,7 @@ static inline bool pathchange(u8* buf, const size_t bufSize, const std::string& 
 		return false;
 	}
 
-	// Replace "arm9loaderhax.bin" with own payload path
+	// Replace "boot.firm" with own payload path
 	size_t offset = curProposedOffset + prefixSize;
 	u8 i = 0;
 	for (i = 0; i < pathLength; ++i) {
@@ -63,7 +63,7 @@ static inline bool pathchange(u8* buf, const size_t bufSize, const std::string& 
 	return true;
 }
 
-static inline bool backupA9LH(const std::string& payloadName) {
+static inline bool backupSighax(const std::string& payloadName) {
 	std::ifstream original(payloadName, std::ifstream::binary);
 	if (!original.good()) {
 		logPrintf("Could not open %s\n", payloadName.c_str());
@@ -104,7 +104,7 @@ UpdateResult update(const UpdateArgs& args) {
 
 		logPrintf("Copying %s to %s.bak...\n", args.payloadPath.c_str(), args.payloadPath.c_str());
 		gfxFlushBuffers();
-		if (!backupA9LH(args.payloadPath)) {
+		if (!backupSighax(args.payloadPath)) {
 			logPrintf("\nCould not backup %s (!!), aborting...\n", args.payloadPath.c_str());
 			return { false, "BACKUP FAILED" };
 		}
@@ -121,17 +121,17 @@ UpdateResult update(const UpdateArgs& args) {
 	size_t offset = 0;
 	size_t payloadSize = 0;
 	if (!releaseGetPayload(args.payloadType, args.chosenVersion, args.isHourly, &payloadData, &offset, &payloadSize)) {
-		logPrintf("FATAL\nCould not get A9LH payload...\n");
+		logPrintf("FATAL\nCould not get sighax payload...\n");
 		std::free(payloadData);
 		return { false, "DOWNLOAD FAILED" };
 	}
 
-	if (args.payloadType == PayloadType::A9LH && args.payloadPath != std::string("/") + DEFAULT_A9LH_PATH) {
+	if (args.payloadType == PayloadType::SIGHAX && args.payloadPath != std::string("/") + DEFAULT_SIGHAX_PATH) {
 		consoleScreen(GFX_TOP);
 		consoleSetProgressData("Applying path changing", 0.6);
 		consoleScreen(GFX_BOTTOM);
 
-		logPrintf("Requested payload path is not %s, applying path patch...\n", DEFAULT_A9LH_PATH);
+		logPrintf("Requested payload path is not %s, applying path patch...\n", DEFAULT_SIGHAX_PATH);
 		if (!pathchange(payloadData + offset, payloadSize, args.payloadPath)) {
 			std::free(payloadData);
 			return { false, "PATHCHANGE FAILED" };
@@ -159,9 +159,9 @@ UpdateResult update(const UpdateArgs& args) {
 	consoleScreen(GFX_BOTTOM);
 
 	logPrintf("Saving payload to SD (as %s)...\n", args.payloadPath.c_str());
-	std::ofstream a9lhfile("/" + args.payloadPath, std::ofstream::binary);
-	a9lhfile.write((const char*)(payloadData + offset), payloadSize);
-	a9lhfile.close();
+	std::ofstream sighaxfile("/" + args.payloadPath, std::ofstream::binary);
+	sighaxfile.write((const char*)(payloadData + offset), payloadSize);
+	sighaxfile.close();
 
 	logPrintf("All done, freeing resources and exiting...\n");
 	std::free(payloadData);

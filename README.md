@@ -2,11 +2,14 @@
 
 Formerly known as "ARN Updater"
 
-A `arm9loaderhax.bin` updater for Luma3DS (formerly AuReiNand) as a 3DS homebrew (no more SD swaps!)
+A `boot.firm` updater for Luma3DS and SigHax (formerly AuReiNand) as a 3DS homebrew (no more SD swaps!)
 
 ## Usage
 
-Refer to the [wiki](https://github.com/Hamcha/lumaupdate/wiki) for usage information.
+Originally from [Hamcha's wiki](https://github.com/Hamcha/lumaupdate/wiki):
+
+For SigHax Users:
+1. Install Luma Updater's CIA then launch it.
 
 ## Requirements
 
@@ -25,7 +28,7 @@ Refer to the [wiki](https://github.com/Hamcha/lumaupdate/wiki) for usage informa
 
 `make` should create the output folder and fill it with both the 3dsx and the cia builds
 
-`make 3dsx` will only build the 3dsx version
+`make 3dsx` will only build the 3dsx version [outdated]
 
 #### Extra flags
 
@@ -53,3 +56,4 @@ Refer to `LICENSE.libmd5-rfc.txt` for the full text.
 - Hourlies built and provided by [astronautlevel](https://github.com/astronautlevel2)
 - Makefiles are somewhat derived by stripping down [Steveice10](https://github.com/Steveice10)'s buildtools
 - CIA jingle by [Cydon @ FreeSound](https://www.freesound.org/people/cydon/)
+- Original code by [Hamcha](https://github.com/Hamcha/lumaupdate)

@@ -226,15 +226,15 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 
 	std::string payloadPath;
 	switch (payloadType) {
-	case PayloadType::A9LH:
-		payloadPath = DEFAULT_A9LH_PATH;
+	case PayloadType::SIGHAX:
+		payloadPath = DEFAULT_SIGHAX_PATH;
 		break;
-	case PayloadType::Menuhax:
+	/*case PayloadType::Menuhax:
 		payloadPath = DEFAULT_MHAX_PATH;
 		break;
 	case PayloadType::Homebrew:
 		payloadPath = DEFAULT_3DSX_PATH;
-		break;
+		break;*/
 	}
 
 	try {

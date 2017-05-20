@@ -2,14 +2,14 @@
 
 #include "libs.h"
 
-#define DEFAULT_A9LH_PATH "arm9loaderhax.bin"
-#define DEFAULT_MHAX_PATH "Luma3DS.dat"
-#define DEFAULT_3DSX_PATH "3DS/Luma3DS/Luma3DS.3dsx"
+#define DEFAULT_SIGHAX_PATH "boot.firm"
+//#define DEFAULT_MHAX_PATH "Luma3DS.dat"
+//#define DEFAULT_3DSX_PATH "3DS/Luma3DS/Luma3DS.3dsx"
 
 enum class PayloadType {
-	A9LH,    /*!< arm9loaderhax payload (arm9loaderhax.bin) */
-	Menuhax, /*!< menuhax payload (Luma3DS.dat)             */
-	Homebrew /*!< hblauncher payload (Luma3DS.3dsx/smdh)    */
+	SIGHAX,    /*!< sighax payload (boot.firm) */
+	/*Menuhax, !< menuhax payload (Luma3DS.dat)             */
+	/*Homebrew !< hblauncher payload (Luma3DS.3dsx/smdh)    */
 };
 
 struct ReleaseVer {
