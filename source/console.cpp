@@ -1,7 +1,7 @@
 #include "console.h"
 
 #ifndef GIT_VER
-#define GIT_VER "v2.0"
+#define GIT_VER "v2.1"
 #endif
 
 PrintConsole* consoleCurrent = nullptr;
@@ -34,6 +34,7 @@ void consolePrintHeader() {
 	consoleCurrent->cursorX = 2;
 	consoleCurrent->cursorY = 1;
 	std::printf("%sLuma Updater %s%s\n\n", CONSOLE_YELLOW, GIT_VER, CONSOLE_RESET);
+	/*std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/updating-to-boot9strap %s\n\n", CONSOLE_RED, CONSOLE_RESET);*/
 }
 
 void consolePrintFooter() {

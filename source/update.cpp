@@ -155,23 +155,47 @@ UpdateResult update(const UpdateArgs& args) {
 	}
 
 	consoleScreen(GFX_TOP);
-	consoleSetProgressData("Saving payload to SD", 0.9);
+	consoleSetProgressData("Saving payload to SD as well as CTR-NAND", 0.9);
 	consoleScreen(GFX_BOTTOM);
 
-	logPrintf("Saving payload to SD (as %s)...\n", args.payloadPath.c_str());
+	logPrintf("Saving payload to SD/CTR-NAND (as %s)...\n", args.payloadPath.c_str());
 	std::ofstream sighaxfile("/" + args.payloadPath, std::ofstream::binary);
 	sighaxfile.write((const char*)(payloadData + offset), payloadSize);
 	sighaxfile.close();
-
+	Handle log;
+	fsInit();
+	FS_Archive ctrArchive;
+	FS_Path path = fsMakePath (PATH_EMPTY,"");
+	Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS,path);
+	if(ret != 0)
+	{
+		logPrintf("FATAL\nCouldn't open CTR-NAND for writing");
+		fsExit();
+		return { false , "CTR-NAND Failure"};
+	}
+	FS_Path path2 = fsMakePath(PATH_ASCII, "/boot.firm");
+	ret = FSUSER_OpenFile(&log,ctrArchive,path2,FS_OPEN_WRITE|FS_OPEN_CREATE,0x0);
+	if(ret != 0)
+	{
+		logPrintf("FATAL\nCouldn't open boot.firm for writing");
+		fsExit();
+		return { false , "CTR-NAND Failure"};
+	}
+	ret = FSFILE_Write(log,NULL,0x0,(const char*)(payloadData + offset),payloadSize,FS_WRITE_FLUSH);
+	if(ret != 0)
+	{
+		logPrintf("FATAL\nCouldn't write boot.firm");
+		FSFILE_Close(log);
+		fsExit();
+		return { false , "CTR-NAND Failure"};
+	}
+	FSFILE_Close(log);
 	logPrintf("All done, freeing resources and exiting...\n");
 	std::free(payloadData);
-
 	consoleClear();
 	consoleScreen(GFX_TOP);
-
 	return { true, "NO ERROR" };
 }
-
 UpdateResult restore(const UpdateArgs& args) {
 	// Rename current payload to .broken
 	if (std::rename(args.payloadPath.c_str(), (args.payloadPath + ".broken").c_str()) != 0) {

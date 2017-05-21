@@ -215,11 +215,12 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		/*if (!usingConfig) {
 			std::printf("  %sConfiguration not found, using default values%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
 		}*/
+		std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/updating-to-boot9strap %s\n\n", CONSOLE_RED, CONSOLE_RESET);
 
 		std::string payloadType;
 		switch (args.payloadType) {
 		case PayloadType::SIGHAX:
-			payloadType = "sighax";
+			payloadType = "SIGHAX";
 			break;
 		/*case PayloadType::Menuhax:
 			payloadType = "Menuhax";
@@ -258,9 +259,9 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		if (haveLatestStable) {
 			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
 				? "\n  You have the latest version.\n"
-				: "\n\n  A new hourly build of Luma3DS is available.\n");
+				: "\n\n\n  A new hourly build of Luma3DS is available.\n");
 		} else {
-			std::printf("\n  A new stable version of Luma3DS is available.\n");
+			std::printf("\n\n  A new stable version of Luma3DS is available.\n");
 		}
 
 		consolePrintFooter();
@@ -525,7 +526,7 @@ int main(int argc, char* argv[]) {
 	updateInfo.writeLog = tolower(config.Get("log enable", "y")[0]) == 'y';
 
 	payloadType = config.Get("payload type", "SIGHAX");
-	if (payloadType == "SIGHAX") {
+	if (payloadType == "SIGHAX" || payloadType == "sighax") {
 		updateInfo.payloadType = PayloadType::SIGHAX;
 	} 
 	/*if (payloadType == "menuhax") {
@@ -695,7 +696,7 @@ int main(int argc, char* argv[]) {
 					"\n  see screen below for details.\n\n  " \
 					"Reason for failure: %s\n\n  "
 					"If you think this is a bug, please open an\n  " \
-					"issue on the following URL:\n  https://github.com/Hamcha/lumaupdate/issues\n\n  " \
+					"issue on the following URL:\n  https://github.com/KunoichiZ/lumaupdate/issues\n\n  " \
 					"Press START to exit.\n", CONSOLE_RED, CONSOLE_RESET, result.errcode.c_str());
 				redraw = false;
 			}
@@ -745,7 +746,7 @@ int main(int argc, char* argv[]) {
 					"\n  see screen below for details.\n\n  " \
 					"Reason for failure: %s\n\n  "
 					"If you think this is a bug, please open an\n  " \
-					"issue on the following URL:\n  https://github.com/Hamcha/lumaupdate/issues\n\n  " \
+					"issue on the following URL:\n  https://github.com/KunoichiZ/lumaupdate/issues\n\n  " \
 					"Press START to exit.\n",
 					CONSOLE_RED, CONSOLE_RESET, result.errcode.c_str());
 				redraw = false;
