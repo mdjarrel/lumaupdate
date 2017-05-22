@@ -1,7 +1,7 @@
 BasicInfo:
   Title              : $(APP_TITLE)
   ProductCode        : $(PRODUCT_CODE)
-  Logo               : Nintendo
+  Logo               : Homebrew
 
 TitleInfo:
   Category           : Application
@@ -28,6 +28,11 @@ AccessControlInfo:
    - CtrNandRw
    - CtrNandRoWrite
   IoAccessControl:
+   - FsMountNand
+   - FsMountNandRoWrite
+   - FsMountTwln
+   - FsMountWnand
+   - FsMountCardSpi
 
   MemoryType                 : Application
   SystemMode                 : 64MB
