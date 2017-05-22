@@ -23,6 +23,10 @@ AccessControlInfo:
 
   FileSystemAccess:
    - DirectSdmc
+   - Core
+   - CtrNandRo
+   - CtrNandRw
+   - CtrNandRoWrite
   IoAccessControl:
 
   MemoryType                 : Application

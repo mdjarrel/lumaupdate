@@ -165,8 +165,8 @@ UpdateResult update(const UpdateArgs& args) {
 	Handle log;
 	fsInit();
 	FS_Archive ctrArchive;
-	FS_Path path = fsMakePath (PATH_EMPTY,"");
-	Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS,path);
+	/*FS_Path path = fsMakePath (PATH_EMPTY,"");*/
+	Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS, fsMakePath(PATH_EMPTY, ""));
 	if(ret != 0)
 	{
 		logPrintf("FATAL\nCouldn't open CTR-NAND for writing");
