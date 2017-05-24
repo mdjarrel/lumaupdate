@@ -121,17 +121,27 @@ ReleaseInfo releaseGetLatestHourly() {
 #ifdef FAKEDL
 	// Citra doesn't support HTTPc right now, so just fake a successful request
 	hourly.name = "aaaaaaa";
-	hourly.versions.push_back(ReleaseVer{ "CITRA", "latest hourly (aaaaaaa)", "https://github.com/AuroraWright/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });
+	hourly.versions.push_back(ReleaseVer{ "CITRA", "latest hourly (aaaaaaa)", "https://github.com/AuroraWright/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });*/
+	
 #else
 
-	static const char* LastCommitURL = "https://raw.githubusercontent.com/astronautlevel2/Luma3DS/gh-pages/lastCommit";
-	static const char* LastDevCommitURL = "https://raw.githubusercontent.com/astronautlevel2/Luma3DSDev/gh-pages/lastCommit";
+	static const char* LastCommitURL = 
+	"http://astronautlevel2.github.io/Luma3DS/lastCommit";
+	
+	/*static const char* LastDevCommitURL = "https://raw.githubusercontent.com/astronautlevel2/Luma3DSDev/gh-pages/lastCommit";*/
 
-	static const char* versions[] = { LastCommitURL, LastDevCommitURL };
+	/*static const char* versions[] = { LastCommitURL, LastDevCommitURL };
 	static const char* vertypes[] = { "hourly", "dev hourly" };
 	static const std::string verurls[] = {
-		"https://astronautlevel2.github.io/Luma3DS/builds/Luma-",
-		"https://astronautlevel2.github.io/Luma3DSDev/builds/Luma-",
+		"http://astronautlevel2.github.io/Luma3DS/latest.zip",
+		"http://astronautlevel2.github.io/Luma3DS/builds/Luma3DS-",
+		"https://astronautlevel2.github.io/Luma3DSDev/builds/Luma3DS-"
+	};*/
+	
+	static const char* versions[] = { LastCommitURL};
+	static const char* vertypes[] = { "hourly" };
+	static const std::string verurls[] = {
+		"http://astronautlevel2.github.io/Luma3DS/latest.zip",
 	};
 
 
@@ -161,7 +171,8 @@ ReleaseInfo releaseGetLatestHourly() {
 			hourly.name = hourlyName;
 		}
 
-		std::string url = verurls[i] + hourlyName + ".zip";
+		/*std::string url = verurls[i] + hourlyName + ".zip";*/
+		std::string url = verurls[i];
 
 		hourly.versions.push_back(ReleaseVer { hourlyName, "latest " + std::string(vertypes[i]) + " (" + hourlyName + ")", std::string(url), 0 });
 		hourly.commits[std::string(vertypes[i])] = hourlyName;

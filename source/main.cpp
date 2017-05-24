@@ -260,6 +260,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
 				? "\n  You have the latest version.\n"
 				: "\n\n\n\n\n A new hourly build of Luma3DS is available.\n");
+				/*: "\n\n\n\n\n  You cannot install the latest hourly at this time.\n");*/
 		} else {
 			std::printf("\n\n  A new stable version of Luma3DS is available.\n");
 		}
