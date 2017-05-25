@@ -1,12 +1,20 @@
 #include "version.h"
 
 #include "utils.h"
+#include <iostream>
+#include <string>
 
 const std::string LumaVersion::toString(bool printBranch) const {
 	std::string currentVersionStr = release;
 	if (!commit.empty()) {
-		/*currentVersionStr "-" + commit;*/
+		//commit.pop_back();
+		//commit.resize(commit.size()-1);
+		commit.erase(commit.length() - 1);
 		currentVersionStr += "-" + commit;
+		
+		
+		/*currentVersionStr "-" + commit;*/
+		/*currentVersionStr; += "-" + commit;*/
 	}
 	/*if (printBranch && isDev) {
 		currentVersionStr += " (dev)";
