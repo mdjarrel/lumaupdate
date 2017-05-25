@@ -8,10 +8,10 @@ A `boot.firm` updater for Luma3DS and SigHax (formerly AuReiNand) as a 3DS homeb
 
 Originally from [Hamcha's wiki](https://github.com/Hamcha/lumaupdate/wiki):
 
-For SigHax Users:
+For SigHax Users
 1. Install Luma Updater's CIA then launch it.
 
-## To possibly work on:
+## To possibly work on
 * Backing up CTRNAND's boot.firm.
 * Restoring boot.firm on CTRNAND.
 * Allowing app to properly boot to allow people to restore any backups.
