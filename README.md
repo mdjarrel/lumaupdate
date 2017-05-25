@@ -11,7 +11,15 @@ Originally from [Hamcha's wiki](https://github.com/Hamcha/lumaupdate/wiki):
 For SigHax Users:
 1. Install Luma Updater's CIA then launch it.
 
-## Requirements
+## To possibly work on:
+* Backing up CTRNAND's boot.firm.
+* Restoring boot.firm on CTRNAND.
+* Allowing app to properly boot to allow people to restore any backups.
+* Display hourly release notes when selected
+* Find out why lumaupdater.cfg isn't working for people.
+
+
+## Compiling Requirements
 
 - Your usual 3DS compilation environment
 - Latest* ctrulib (the one currently bundled with devKitPro won't cut it)
