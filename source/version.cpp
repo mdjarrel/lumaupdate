@@ -9,12 +9,17 @@ const std::string LumaVersion::toString(bool printBranch) const {
 	if (!commit.empty()) {
 		//commit.pop_back();
 		//commit.resize(commit.size()-1);
-		commit.erase(commit.length() - 1);
+		//commit.erase(commit.length() - 1);
+		
+		/*commit = commit[0];
+
+		for (int i = 0; i < 7; i++)
+		{
+			commit += commit;
+		}*/
+		
+		//commit.substr(0, commit.size()-1);
 		currentVersionStr += "-" + commit;
-		
-		
-		/*currentVersionStr "-" + commit;*/
-		/*currentVersionStr; += "-" + commit;*/
 	}
 	/*if (printBranch && isDev) {
 		currentVersionStr += " (dev)";
