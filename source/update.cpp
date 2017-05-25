@@ -156,16 +156,18 @@ UpdateResult update(const UpdateArgs& args) {
 
 	consoleScreen(GFX_TOP);
 	consoleSetProgressData("Saving payload to SD as well as CTR-NAND", 0.9);
+	/*consoleSetProgressData("Saving payload to SD", 0.9);*/
 	consoleScreen(GFX_BOTTOM);
 
-	logPrintf("Saving payload to SD/CTR-NAND (as %s)...\n", args.payloadPath.c_str());
+	logPrintf("Saving payload to SD (as %s)...\n", args.payloadPath.c_str());
+	/*logPrintf("Saving payload to SD/CTR-NAND (as %s)...\n", args.payloadPath.c_str());*/
 	std::ofstream sighaxfile("/" + args.payloadPath, std::ofstream::binary);
 	sighaxfile.write((const char*)(payloadData + offset), payloadSize);
 	sighaxfile.close();
-	Handle log;
+	/*Handle log;
 	fsInit();
 	FS_Archive ctrArchive;
-	/*FS_Path path = fsMakePath (PATH_EMPTY,"");*/
+	FS_Path path = fsMakePath (PATH_EMPTY,"");
 	Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS, fsMakePath(PATH_EMPTY, ""));
 	if(ret != 0)
 	{
@@ -189,7 +191,7 @@ UpdateResult update(const UpdateArgs& args) {
 		fsExit();
 		return { false , "CTR-NAND Failure"};
 	}
-	FSFILE_Close(log);
+	FSFILE_Close(log);*/
 	logPrintf("All done, freeing resources and exiting...\n");
 	std::free(payloadData);
 	consoleClear();

@@ -212,7 +212,7 @@ UpdateResult updaterDoUpdate(LatestUpdaterInfo latest, UpdaterInfo current) {
 			u8* hbData;
 			size_t hbSize;
 			logPrintf("Extracting lumaupdater.3dsx");
-			archive.extractFile("3DS/lumaupdater/lumaupdater.3dsx", &hbData, &hbSize);
+			archive.extractFile("3ds/lumaupdater/lumaupdater.3dsx", &hbData, &hbSize);
 			logPrintf(" [OK] (%u bytes)\n", hbSize);
 
 
@@ -225,7 +225,7 @@ UpdateResult updaterDoUpdate(LatestUpdaterInfo latest, UpdaterInfo current) {
 			u8* smdhData;
 			size_t smdhSize;
 			logPrintf("Extracting lumaupdater.3dsx");
-			archive.extractFile("3DS/lumaupdater/lumaupdater.smdh", &smdhData, &smdhSize);
+			archive.extractFile("3ds/lumaupdater/lumaupdater.smdh", &smdhData, &smdhSize);
 			logPrintf(" [OK] (%u bytes)\n", smdhSize);
 
 			const std::string targetSMDH = current.sdmcLoc + "/" + current.sdmcName + ".smdh";
