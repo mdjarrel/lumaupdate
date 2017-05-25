@@ -4,7 +4,7 @@
 #include "console.h"
 #include "lumautils.h"
 #include "utils.h"
-
+bool ctrnand = true; //true by default
 static inline bool pathchange(u8* buf, const size_t bufSize, const std::string& path) {
 	const static char original[] = "sdmc:/boot.firm";
 	const static size_t prefixSize = 12; // S \0 D \0 M \0 C \0 : \0 / \0
@@ -82,7 +82,46 @@ static inline bool backupSighax(const std::string& payloadName) {
 
 	original.close();
 	target.close();
+	
+	//---------------------------------------------------------------- Ctr Archive code.
+	if(ctrnand == true)
+	{	
+		fsInit();
+		FS_Archive ctrArchive;
+		FS_Path path = fsMakePath (PATH_EMPTY,"");
+		FS_Path ori = fsMakePath(PATH_ASCII, "/boot.firm");
+		FS_Path back = fsMakePath(PATH_ASCII ,"/boot.firm.bak");
+		Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS,path);
+		if(ret != 0)
+		{
+			logPrintf("FATAL\nCouldn't open CTR-NAND for renaming");
+			FSUSER_CloseArchive (ctrArchive);
+			fsExit();
+			return false;
+		}
+		ret = FSUSER_RenameFile(ctrArchive,ori,ctrArchive,back);
+		if((u32)ret == 0xC82044BE)
+		{
+			Result res = FSUSER_DeleteFile (ctrArchive, back);
+			if(res == 0)
+				FSUSER_RenameFile(ctrArchive,ori,ctrArchive,back);
+			else
+			{
+				logPrintf("Something is critically wrong %08X\n",res);
+				FSUSER_CloseArchive (ctrArchive);
+				fsExit();
+				return false;
+			}
+		}	
+		else if((u32)ret == 0xC8804478)
+		{
+			logPrintf("boot.firm not found on CTR-NAND.Skipping\n");
+		}	
+		FSUSER_CloseArchive (ctrArchive);
+		fsExit();
+	}	
 	return true;
+	//---------------------------------------------------------------------------
 }
 
 UpdateResult update(const UpdateArgs& args) {
@@ -91,7 +130,23 @@ UpdateResult update(const UpdateArgs& args) {
 
 	consoleScreen(GFX_BOTTOM);
 	consoleClear();
-
+	logPrintf("Do you want to enable downloading boot.firm on CTR-NAND?\n Press A + X to enable\n Press B to disable\n");
+	while(aptMainLoop())
+	{
+		hidScanInput();
+		if((hidKeysDown() & KEY_A)&&(hidKeysDown() & KEY_X))
+		{
+			ctrnand = true;
+			logPrintf("CTR-NAND related operations enabled\n");
+			break;
+		}
+		if(hidKeysDown() & KEY_B)
+		{
+			ctrnand = false;
+			logPrintf("CTR-NAND related operations disabled\n");
+			break;
+		}	
+	}
 	// Back up local file if it exists
 	if (!args.backupExisting) {
 		logPrintf("Payload backup is disabled in config, skipping...\n");
@@ -101,7 +156,7 @@ UpdateResult update(const UpdateArgs& args) {
 		consoleScreen(GFX_TOP);
 		consoleSetProgressData("Backing up old payload", 0.1);
 		consoleScreen(GFX_BOTTOM);
-
+		
 		logPrintf("Copying %s to %s.bak...\n", args.payloadPath.c_str(), args.payloadPath.c_str());
 		gfxFlushBuffers();
 		if (!backupSighax(args.payloadPath)) {
@@ -156,42 +211,48 @@ UpdateResult update(const UpdateArgs& args) {
 
 	consoleScreen(GFX_TOP);
 	consoleSetProgressData("Saving payload to SD as well as CTR-NAND", 0.9);
-	/*consoleSetProgressData("Saving payload to SD", 0.9);*/
 	consoleScreen(GFX_BOTTOM);
 
-	logPrintf("Saving payload to SD (as %s)...\n", args.payloadPath.c_str());
-	/*logPrintf("Saving payload to SD/CTR-NAND (as %s)...\n", args.payloadPath.c_str());*/
+	logPrintf("Saving payload to SD/CTR-NAND (as %s)...\n", args.payloadPath.c_str());
 	std::ofstream sighaxfile("/" + args.payloadPath, std::ofstream::binary);
 	sighaxfile.write((const char*)(payloadData + offset), payloadSize);
 	sighaxfile.close();
-	/*Handle log;
-	fsInit();
-	FS_Archive ctrArchive;
-	FS_Path path = fsMakePath (PATH_EMPTY,"");
-	Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS, fsMakePath(PATH_EMPTY, ""));
-	if(ret != 0)
-	{
-		logPrintf("FATAL\nCouldn't open CTR-NAND for writing");
-		fsExit();
-		return { false , "CTR-NAND Failure"};
-	}
-	FS_Path path2 = fsMakePath(PATH_ASCII, "/boot.firm");
-	ret = FSUSER_OpenFile(&log,ctrArchive,path2,FS_OPEN_WRITE|FS_OPEN_CREATE,0x0);
-	if(ret != 0)
-	{
-		logPrintf("FATAL\nCouldn't open boot.firm for writing");
-		fsExit();
-		return { false , "CTR-NAND Failure"};
-	}
-	ret = FSFILE_Write(log,NULL,0x0,(const char*)(payloadData + offset),payloadSize,FS_WRITE_FLUSH);
-	if(ret != 0)
-	{
-		logPrintf("FATAL\nCouldn't write boot.firm");
+	//----------------------------------------------------------------CTR ARCHIVE code
+	if(ctrnand == true)
+	{	
+		Handle log;
+		fsInit();
+		FS_Archive ctrArchive;
+		FS_Path path = fsMakePath (PATH_EMPTY,"");
+		Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS,path);
+		if(ret != 0)
+		{
+			logPrintf("FATAL\nCouldn't open CTR-NAND for writing");
+			fsExit();
+			return { false , "CTR-NAND Failure"};
+		}
+		FS_Path path2 = fsMakePath(PATH_ASCII, "/boot.firm");
+		ret = FSUSER_OpenFile(&log,ctrArchive,path2,FS_OPEN_WRITE|FS_OPEN_CREATE,0x0);
+		if(ret != 0)
+		{
+			logPrintf("FATAL\nCouldn't open boot.firm for writing");
+			fsExit();
+			FSUSER_CloseArchive (ctrArchive);
+			return { false , "CTR-NAND Failure"};
+		}
+		ret = FSFILE_Write(log,NULL,0x0,(const char*)(payloadData + offset),payloadSize,FS_WRITE_FLUSH);
+		if(ret != 0)
+		{
+			logPrintf("FATAL\nCouldn't write boot.firm");
+			FSFILE_Close(log);
+			FSUSER_CloseArchive (ctrArchive);
+			fsExit();
+			return { false , "CTR-NAND Failure"};
+		}
 		FSFILE_Close(log);
+		FSUSER_CloseArchive (ctrArchive);
 		fsExit();
-		return { false , "CTR-NAND Failure"};
 	}
-	FSFILE_Close(log);*/
 	logPrintf("All done, freeing resources and exiting...\n");
 	std::free(payloadData);
 	consoleClear();
@@ -199,6 +260,24 @@ UpdateResult update(const UpdateArgs& args) {
 	return { true, "NO ERROR" };
 }
 UpdateResult restore(const UpdateArgs& args) {
+	consoleScreen(GFX_BOTTOM);
+	logPrintf("Restore payload on CTR-NAND also?\n Press A + X to enable.\n Press B to disable.\n");
+	while(aptMainLoop())
+	{
+		hidScanInput();
+		if((hidKeysDown() & KEY_A)&&(hidKeysDown() & KEY_X))
+		{
+			ctrnand = true;
+			logPrintf("CTR-NAND related operations enabled\n");
+			break;
+		}
+		if(hidKeysDown() & KEY_B)
+		{
+			ctrnand = false;
+			logPrintf("CTR-NAND related operations disabled\n");
+			break;
+		}	
+	}	
 	// Rename current payload to .broken
 	if (std::rename(args.payloadPath.c_str(), (args.payloadPath + ".broken").c_str()) != 0) {
 		logPrintf("Can't rename current version");
@@ -213,5 +292,33 @@ UpdateResult restore(const UpdateArgs& args) {
 	if (std::remove((args.payloadPath + ".broken").c_str()) != 0) {
 		logPrintf("WARN: Could not remove current payload, please remove it manually");
 	}
+	//----------------------------------------------------CTR-ARCHIVE code
+	if(ctrnand == true)
+	{	
+		fsInit();
+		FS_Archive ctrArchive;
+		FS_Path path = fsMakePath (PATH_EMPTY,"");
+		FS_Path ori = fsMakePath(PATH_ASCII, "/boot.firm");
+		FS_Path back = fsMakePath(PATH_ASCII ,"/boot.firm.bak");
+		Result ret = FSUSER_OpenArchive(&ctrArchive, ARCHIVE_NAND_CTR_FS,path);
+		if(ret != 0)
+		{
+			logPrintf("FATAL\nCouldn't open CTR-NAND for restoring");
+			FSUSER_CloseArchive (ctrArchive);
+			fsExit();
+			return {false,"CTR-NAND ERROR"};
+		}
+		FSUSER_DeleteFile (ctrArchive, ori);	
+		ret = FSUSER_RenameFile(ctrArchive,back,ctrArchive,ori);
+		if(ret != 0)
+		{
+			logPrintf("Something is critically wrong %08X\n",ret);
+			FSUSER_CloseArchive (ctrArchive);
+			fsExit();
+			return {false, "CTR-NAND ERROR"};
+		}
+		FSUSER_CloseArchive (ctrArchive);
+		fsExit();
+	}	
 	return { true, "NO ERROR" };
 }
