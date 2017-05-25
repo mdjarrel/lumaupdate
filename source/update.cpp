@@ -4,9 +4,7 @@
 #include "console.h"
 #include "lumautils.h"
 #include "utils.h"
-
 bool ctrnand = true; //true by default
-
 static inline bool pathchange(u8* buf, const size_t bufSize, const std::string& path) {
 	const static char original[] = "sdmc:/boot.firm";
 	const static size_t prefixSize = 12; // S \0 D \0 M \0 C \0 : \0 / \0
