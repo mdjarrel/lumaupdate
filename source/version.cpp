@@ -20,9 +20,7 @@ const std::string LumaVersion::toString(bool printBranch) const {
 
 		currentVersionStr += "-" + fixedCommit;
 	}
-	/*if (printBranch && isDev) {
-		currentVersionStr += " (dev)";
-	}*/
+	
 	return currentVersionStr;
 }
 
