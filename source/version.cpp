@@ -4,22 +4,21 @@
 #include <iostream>
 #include <string>
 
+std::string getCommit(std::string commitString) {
+	std::string commit = "";
+	for (int i = 0; i < 7; i++)
+	{
+		commit += commitString[i];
+	}
+	return commit;
+}
+
 const std::string LumaVersion::toString(bool printBranch) const {
 	std::string currentVersionStr = release;
 	if (!commit.empty()) {
-		//commit.pop_back();
-		//commit.resize(commit.size()-1);
-		//commit.erase(commit.length() - 1);
-		
-		/*commit = commit[0];
+		std::string fixedCommit = getCommit(commit);
 
-		for (int i = 0; i < 7; i++)
-		{
-			commit += commit;
-		}*/
-		
-		//commit.substr(0, commit.size()-1);
-		currentVersionStr += "-" + commit;
+		currentVersionStr += "-" + fixedCommit;
 	}
 	/*if (printBranch && isDev) {
 		currentVersionStr += " (dev)";
