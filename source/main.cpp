@@ -215,7 +215,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		/*if (!usingConfig) {
 			std::printf("  %sConfiguration not found, using default values%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
 		}*/
-		std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/updating-to-boot9strap %s\n\n", CONSOLE_RED, CONSOLE_RESET);
+		std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/a9lh-to-b9s %s\n\n", CONSOLE_RED, CONSOLE_RESET);
 
 		std::string payloadType;
 		switch (args.payloadType) {
