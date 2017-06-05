@@ -252,17 +252,17 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 
 		std::printf("  Latest version (Github):   %s%s%s\n", CONSOLE_GREEN, args.stable->name.c_str(), CONSOLE_RESET);
 
-		/*if (args.hourly != nullptr) {
+		if (args.hourly != nullptr) {
 			std::printf("  Latest hourly build:       %s%s%s\n", CONSOLE_GREEN, args.hourly->name.c_str(), CONSOLE_RESET);
-		}*/
+		}
 
 		if (haveLatestStable) {
 			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
 				? "\n  You have the latest version.\n"
-				/*: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");*/
-				: "\n\n\n\n\n  You cannot install the latest hourly at this \ntime.\n");
+				: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");
+				/*: "\n\n\n\n\n  You cannot install the latest hourly at this time.\n");*/
 		} else {
-			std::printf("\n\n  A new stable version of Luma3DS is available.\n");
+			std::printf("\n\n\n  A new stable version of Luma3DS is available.\n");
 		}
 
 		consolePrintFooter();
@@ -272,15 +272,13 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		status.pageCount = drawChangelog("v" + args.stable->name, args.stable->description, status.currentPage);
 		consoleScreen(GFX_TOP);
 	}
-
-	int y = 12 + (!usingConfig ? 2 : 0) + (backupVersionDetected ? 1 : 0);
-	/*int y = 12 + (!usingConfig ? 2 : 0) + (args.hourly != nullptr ? 1 : 0) + (backupVersionDetected ? 1 : 0);*/
+	int y = 12 + (!usingConfig ? 2 : 0) + 1 + (backupVersionDetected ? 1 : 0);
+	/*int y = 12 + (!usingConfig ? 2 : 0) + (backupVersionDetected ? 1 : 0);*/
 
 	consoleMoveTo(0, y);
 
 	// Wrap around cursor
 	int optionCount = args.stable->versions.size() + (args.backupExists ? 1 : 0);
-	/*int optionCount = args.stable->versions.size() + (args.hourly != nullptr ? args.hourly->versions.size() : 0) + (args.backupExists ? 1 : 0);*/
 	while (status.selected < 0) status.selected += optionCount;
 	status.selected = status.selected % optionCount;
 
@@ -291,14 +289,16 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		++curOption;
 	}
 
-	/*hourlyOptionStart = curOption;
-	if (args.hourly != nullptr) {
+	hourlyOptionStart = curOption;
+	/*if (args.hourly != nullptr) {*/
+	if(false)
+	{
 		for (ReleaseVer h : args.hourly->versions) {
 			std::printf("     Install %s\n", h.friendlyName.c_str());
 			++curOption;
 		}
-	}*/
-
+	}
+	
 	extraOptionStart = curOption;
 
 	// Extra #0: Restore backup
