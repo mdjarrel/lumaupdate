@@ -1,7 +1,7 @@
 #include "console.h"
 
 #ifndef GIT_VER
-#define GIT_VER "v2.1.1"
+#define GIT_VER "v2.1.2"
 #endif
 
 PrintConsole* consoleCurrent = nullptr;

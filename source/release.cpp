@@ -55,7 +55,7 @@ ReleaseInfo releaseGetLatestStable() {
 	bool verHasName = false, verHasURL = false, verHasSize = false, isDev = false;
 	ReleaseVer current;
 	for (int i = 0; i < r; i++) {
-		if (!namefound && jsoneq((const char*)apiReqData, &t[i], "name") == 0) {
+		if (!namefound && jsoneq((const char*)apiReqData, &t[i], "tag_name") == 0) {
 			jsmntok_t val = t[i+1];
 			// Strip the "v" in front of the version name
 			if (apiReqData[val.start] == 'v') {

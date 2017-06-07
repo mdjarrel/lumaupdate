@@ -106,7 +106,7 @@ static inline int drawChangelog(const std::string& name, const std::string& log,
 		pageCount = getPageCount(releaseNotes, 23);
 
 		// Print header
-		printf("%sRelease notes for %s%s%s\n\n", CONSOLE_YELLOW, CONSOLE_GREEN, name.c_str(), CONSOLE_RESET);
+		printf("%sRelease notes for %sv%s%s\n\n", CONSOLE_YELLOW, CONSOLE_GREEN, name.c_str(), CONSOLE_RESET);
 
 		if (page > 0) {
 			consoleMoveTo(18, 2);
@@ -216,7 +216,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			std::printf("  %sConfiguration not found, using default values%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
 		}*/
 		std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/a9lh-to-b9s %s\n\n", CONSOLE_RED, CONSOLE_RESET);
-
+		
 		std::string payloadType;
 		switch (args.payloadType) {
 		case PayloadType::SIGHAX:
@@ -259,8 +259,8 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 		if (haveLatestStable) {
 			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
 				? "\n  You have the latest version.\n"
-				: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");
-				/*: "\n\n\n\n\n  You cannot install the latest hourly at this time.\n");*/
+				/*: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");*/
+				: "\n\n\n\n\n  You cannot install the latest hourly \n  at this time.\n");
 		} else {
 			std::printf("\n\n\n  A new stable version of Luma3DS is available.\n");
 		}
@@ -269,7 +269,8 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	}
 
 	if (status.redrawBottom) {
-		status.pageCount = drawChangelog("v" + args.stable->name, args.stable->description, status.currentPage);
+		status.pageCount = drawChangelog(args.stable->name, args.stable->description, status.currentPage);
+		/*status.pageCount = drawChangelog("v" + args.stable->name, args.stable->description, status.currentPage);*/
 		consoleScreen(GFX_TOP);
 	}
 	int y = 12 + (!usingConfig ? 2 : 0) + 1 + (backupVersionDetected ? 1 : 0);
