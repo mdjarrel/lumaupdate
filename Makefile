@@ -36,6 +36,8 @@ LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 
 APP_ICON := $(CURDIR)/$(ICON)
 
+_3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
+
 # Compiler flags
 
 ARCH     := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
@@ -65,7 +67,8 @@ ZIPNAME   = lumaupdater-$(shell git describe --tags | tr -d 'v').zip
 
 # Shortcuts
 
-all : prereq $(OUTPUT).cia
+all : prereq $(OUTPUT).3dsx $(OUTPUT).cia
+3dsx: prereq $(OUTPUT).3dsx
 cia : prereq $(OUTPUT).cia
 pkg : prereq $(ZIPNAME)
 
@@ -75,14 +78,15 @@ prereq:
 
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTPUT).cia $(TARGET).elf
+	@rm -fr $(BUILD) $(TARGET).3dsx $(OUTPUT).cia $(OUTPUT).smdh $(TARGET).elf
 
 # Archive
 
-$(ZIPNAME): $(OUTPUT).cia
+$(ZIPNAME): $(OUTPUT).cia $(OUTPUT).3dsx $(OUTPUT).smdh
 	mkdir -p $(CURDIR)/archive/3DS/lumaupdater
 	cp $(CURDIR)/lumaupdater.cfg $(CURDIR)/archive
 	cp $(OUTPUT).cia $(CURDIR)/archive
+	cp $(OUTPUT).3dsx $(OUTPUT).smdh $(CURDIR)/archive/3DS/lumaupdater
 	@(cd archive; zip -r -9 ../$(ZIPNAME) .)
 	rm -rf $(CURDIR)/archive
 	@echo
@@ -93,6 +97,8 @@ $(ZIPNAME): $(OUTPUT).cia
 MAKEROM ?= makerom
 
 $(OUTPUT).elf: $(OFILES)
+
+$(OUTPUT).3dsx: $(OUTPUT).elf $(OUTPUT).smdh
 
 $(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/banner.bnr $(BUILD)/icon.icn
 	$(MAKEROM) -f cia -o $@ -elf $< -rsf $(CURDIR)/rominfo.rsf -target t -exefslogo -logo meta/logo.bcma.lz -banner $(BUILD)/banner.bnr -icon $(BUILD)/icon.icn -DAPP_TITLE="$(APP_TITLE)" -DPRODUCT_CODE="$(PRODUCT_CODE)" -DUNIQUE_ID="$(UNIQUE_ID)"
