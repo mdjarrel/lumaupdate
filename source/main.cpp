@@ -1,3 +1,4 @@
+#include "main.h"
 #include "libs.h"
 
 #include "arnutil.h"
@@ -12,84 +13,6 @@
 #define WAIT_START while (aptMainLoop() && !(hidKeysDown() & KEY_START)) { gspWaitForVBlank(); hidScanInput(); }
 
 static bool redraw = false;
-
-/* States */
-
-enum UpdateState {
-	UpdateConfirmationScreen,
-	Updating,
-	UpdateComplete,
-	UpdateFailed,
-	Restoring,
-	RestoreComplete,
-	RestoreFailed
-};
-
-enum class ChoiceType {
-	NoChoice,
-	UpdatePayload,
-	RestoreBackup
-};
-
-enum class SelfUpdateChoice {
-	NoChoice,
-	SelfUpdate,
-	IgnoreUpdate,
-};
-
-struct UpdateChoice {
-	ChoiceType type          = ChoiceType::NoChoice;
-	ReleaseVer chosenVersion = ReleaseVer{};
-	bool       isHourly      = false;
-
-	explicit UpdateChoice(const ChoiceType type)
-		:type(type) {}
-	UpdateChoice(const ChoiceType type, const ReleaseVer& ver, const bool hourly)
-		:type(type), chosenVersion(ver), isHourly(hourly) {}
-};
-
-struct UpdateInfo {
-	// Detected options
-	LumaVersion  currentVersion;
-	LumaVersion  backupVersion;
-	bool         migrateARN     = false;
-	bool         backupExists   = false;
-
-	// Configuration options
-	PayloadType  payloadType    = PayloadType::SIGHAX;
-	std::string  payloadPath    = "/boot.firm";
-	bool         backupExisting = true;
-	bool         selfUpdate     = true;
-	bool         writeLog       = true;
-
-	// Available data
-	ReleaseInfo* stable = nullptr;
-	ReleaseInfo* hourly = nullptr;
-
-	// Chosen settings
-	UpdateChoice choice = UpdateChoice(ChoiceType::NoChoice);
-
-	UpdateArgs getArgs() {
-		return UpdateArgs{ payloadType, payloadPath, backupExisting, migrateARN, choice.chosenVersion, choice.isHourly };
-	}
-};
-
-struct PromptStatus {
-	// Redraw queries
-	bool redrawTop = false;
-	bool redrawBottom = false;
-	bool partialredraw = false;
-	bool redrawRequired() { return redrawTop || redrawBottom || partialredraw; }
-	void resetRedraw() { redrawTop = redrawBottom = partialredraw = false; }
-
-	// Selection and paging
-	int  selected = 0;
-	int  currentPage = 0;
-	int  pageCount = 0;
-
-	// Prompt choice taken?
-	bool optionChosen = false;
-};
 
 static inline int drawChangelog(const std::string& name, const std::string& log, const int page) {
 	int pageCount = 0;
@@ -216,7 +139,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			std::printf("  %sConfiguration not found, using default values%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
 		}*/
 		std::printf("%s  This is only for sighax/boot9strap users.\n  Do not use this if you have a9lh installed.\n  To update to boot9strap, please visit\n  https://3ds.guide/a9lh-to-b9s %s\n\n", CONSOLE_RED, CONSOLE_RESET);
-		
+
 		std::string payloadType;
 		switch (args.payloadType) {
 		case PayloadType::SIGHAX:
@@ -299,7 +222,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			++curOption;
 		}
 	}
-	
+
 	extraOptionStart = curOption;
 
 	// Extra #0: Restore backup
@@ -532,7 +455,7 @@ int main(int argc, char* argv[]) {
 	payloadType = config.Get("payload type", "SIGHAX");
 	if (payloadType == "SIGHAX" || payloadType == "sighax") {
 		updateInfo.payloadType = PayloadType::SIGHAX;
-	} 
+	}
 	/*if (payloadType == "menuhax") {
 		updateInfo.payloadType = PayloadType::Menuhax;
 	} else if (payloadType == "homebrew") {
@@ -686,7 +609,7 @@ int main(int argc, char* argv[]) {
 			}
 			break;
 		case Updating:
-			result = update(updateInfo.getArgs());
+			result = update(updateInfo);
 			state = result.success ? UpdateComplete : UpdateFailed;
 			redraw = true;
 			break;
@@ -722,7 +645,7 @@ int main(int argc, char* argv[]) {
 			}
 			break;
 		case Restoring:
-			result = restore(updateInfo.getArgs());
+			result = restore(updateInfo);
 			state = result.success ? RestoreComplete : RestoreFailed;
 			redraw = true;
 			break;
