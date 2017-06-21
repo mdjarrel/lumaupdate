@@ -4,7 +4,7 @@
 
 std::string formatErrMessage(const char* msg, const Result& val) {
 	std::ostringstream os;
-	os << msg << "\nRet code: " << val;
+	os << msg << "\nRet code: " << std::hex << val;
 	return os.str();
 }
 
