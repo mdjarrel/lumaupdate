@@ -86,7 +86,7 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	static int hourlyOptionStart = INT_MAX;
 	static int extraOptionStart = INT_MAX;
 
-	const bool backupVersionDetected = args.backupExists && !args.backupVersion.isValid();
+	const bool backupVersionDetected = args.backupExists && args.backupVersion.isValid();
 
 	handlePromptInput(status);
 
