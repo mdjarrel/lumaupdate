@@ -1,4 +1,5 @@
 #include "update.h"
+#include "main.h"
 
 #include "arnutil.h"
 #include "console.h"
@@ -82,10 +83,10 @@ static inline bool backupSighax(const std::string& payloadName) {
 
 	original.close();
 	target.close();
-	
+
 	//---------------------------------------------------------------- Ctr Archive code.
 	if(ctrnand == true)
-	{	
+	{
 		fsInit();
 		FS_Archive ctrArchive;
 		FS_Path path = fsMakePath (PATH_EMPTY,"");
@@ -112,19 +113,28 @@ static inline bool backupSighax(const std::string& payloadName) {
 				fsExit();
 				return false;
 			}
-		}	
+		}
 		else if((u32)ret == 0xC8804478)
 		{
 			logPrintf("boot.firm not found on CTR-NAND.Skipping\n");
-		}	
+		}
 		FSUSER_CloseArchive (ctrArchive);
 		fsExit();
-	}	
+	}
 	return true;
 	//---------------------------------------------------------------------------
 }
 
-UpdateResult update(const UpdateArgs& args) {
+UpdateResult update(const UpdateInfo& args) {
+	if(args.currentVersion.release == "7.1") {
+		consoleScreen(GFX_BOTTOM);
+		consoleClear();
+		std::printf("%sUpdate aborted%s\n\nTo update to the latest version of Luma3DS, you need to update boot9strap first.\nPlease visit https://3ds.guide/updating-b9s for instructions.\n\n", CONSOLE_RED, CONSOLE_RESET);
+		gfxFlushBuffers();
+		logPrintf("FATAL\nIncompatible update path, aborting...\n");
+		return { false, "INCOMPATIBLE UPDATE" };
+	}
+
 	consoleScreen(GFX_TOP);
 	consoleInitProgress("Updating Luma3DS", "Performing preliminary operations", 0);
 
@@ -145,7 +155,7 @@ UpdateResult update(const UpdateArgs& args) {
 			ctrnand = false;
 			logPrintf("CTR-NAND related operations disabled\n");
 			break;
-		}	
+		}
 	}
 	// Back up local file if it exists
 	if (!args.backupExisting) {
@@ -156,7 +166,7 @@ UpdateResult update(const UpdateArgs& args) {
 		consoleScreen(GFX_TOP);
 		consoleSetProgressData("Backing up old payload", 0.1);
 		consoleScreen(GFX_BOTTOM);
-		
+
 		logPrintf("Copying %s to %s.bak...\n", args.payloadPath.c_str(), args.payloadPath.c_str());
 		gfxFlushBuffers();
 		if (!backupSighax(args.payloadPath)) {
@@ -219,7 +229,7 @@ UpdateResult update(const UpdateArgs& args) {
 	sighaxfile.close();
 	//----------------------------------------------------------------CTR ARCHIVE code
 	if(ctrnand == true)
-	{	
+	{
 		Handle log;
 		fsInit();
 		FS_Archive ctrArchive;
@@ -259,7 +269,7 @@ UpdateResult update(const UpdateArgs& args) {
 	consoleScreen(GFX_TOP);
 	return { true, "NO ERROR" };
 }
-UpdateResult restore(const UpdateArgs& args) {
+UpdateResult restore(const UpdateInfo& args) {
 	consoleScreen(GFX_BOTTOM);
 	logPrintf("Restore payload on CTR-NAND also?\n Press A + X to enable.\n Press B to disable.\n");
 	while(aptMainLoop())
@@ -276,8 +286,8 @@ UpdateResult restore(const UpdateArgs& args) {
 			ctrnand = false;
 			logPrintf("CTR-NAND related operations disabled\n");
 			break;
-		}	
-	}	
+		}
+	}
 	// Rename current payload to .broken
 	if (std::rename(args.payloadPath.c_str(), (args.payloadPath + ".broken").c_str()) != 0) {
 		logPrintf("Can't rename current version");
@@ -294,7 +304,7 @@ UpdateResult restore(const UpdateArgs& args) {
 	}
 	//----------------------------------------------------CTR-ARCHIVE code
 	if(ctrnand == true)
-	{	
+	{
 		fsInit();
 		FS_Archive ctrArchive;
 		FS_Path path = fsMakePath (PATH_EMPTY,"");
@@ -308,7 +318,7 @@ UpdateResult restore(const UpdateArgs& args) {
 			fsExit();
 			return {false,"CTR-NAND ERROR"};
 		}
-		FSUSER_DeleteFile (ctrArchive, ori);	
+		FSUSER_DeleteFile (ctrArchive, ori);
 		ret = FSUSER_RenameFile(ctrArchive,back,ctrArchive,ori);
 		if(ret != 0)
 		{
@@ -319,6 +329,6 @@ UpdateResult restore(const UpdateArgs& args) {
 		}
 		FSUSER_CloseArchive (ctrArchive);
 		fsExit();
-	}	
+	}
 	return { true, "NO ERROR" };
 }
