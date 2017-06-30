@@ -86,7 +86,10 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	static int hourlyOptionStart = INT_MAX;
 	static int extraOptionStart = INT_MAX;
 
-	const bool backupVersionDetected = args.backupExists && !args.backupVersion.isValid();
+	const bool backupVersionDetected = args.backupExists && args.backupVersion.isValid();
+
+	bool haveLatestStable = false;
+	bool haveLatestCommit = false;
 
 	handlePromptInput(status);
 
@@ -128,10 +131,6 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	consoleScreen(GFX_TOP);
 
 	if (status.redrawTop) {
-		const bool haveLatestStable = args.currentVersion.release == args.stable->name;
-		const bool haveLatestCommit = args.currentVersion.commit == args.hourly->commits[args.currentVersion
-			.isDev ? "dev hourly" : "hourly"];
-
 		consoleClear();
 		consolePrintHeader();
 
@@ -166,32 +165,40 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			std::printf("  %sCould not detect current version%s\n\n", CONSOLE_MAGENTA, CONSOLE_RESET);
 		}
 
-		if (backupVersionDetected) {
-			std::printf("  Current backup version:    %s%s%s\n",
-				(args.backupVersion.toString() == args.stable->name ? CONSOLE_GREEN : CONSOLE_RED),
-				args.backupVersion.toString().c_str(),
-				CONSOLE_RESET);
+		if(args.stable != nullptr) {
+			if (backupVersionDetected) {
+				std::printf("  Current backup version:    %s%s%s\n",
+					(args.backupVersion.toString() == args.stable->name ? CONSOLE_GREEN : CONSOLE_RED),
+					args.backupVersion.toString().c_str(),
+					CONSOLE_RESET);
+			}
+			haveLatestStable = args.currentVersion.release == args.stable->name;
+			std::printf("  Latest version (Github):   %s%s%s\n", CONSOLE_GREEN, args.stable->name.c_str(), CONSOLE_RESET);
 		}
 
-		std::printf("  Latest version (Github):   %s%s%s\n", CONSOLE_GREEN, args.stable->name.c_str(), CONSOLE_RESET);
-
 		if (args.hourly != nullptr) {
+			haveLatestCommit = args.currentVersion.commit == args.hourly->commits[args.currentVersion
+				.isDev ? "dev hourly" : "hourly"];
 			std::printf("  Latest hourly build:       %s%s%s\n", CONSOLE_GREEN, args.hourly->name.c_str(), CONSOLE_RESET);
 		}
 
-		if (haveLatestStable) {
-			std::printf(haveLatestCommit || args.currentVersion.commit.empty()
-				? "\n  You have the latest version.\n"
-				/*: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");*/
-				: "\n\n\n\n\n  You cannot install the latest hourly \n  at this time.\n");
+		if (args.stable) {
+			if(haveLatestStable) {
+				std::printf(haveLatestCommit || args.currentVersion.commit.empty()
+					? "\n  You have the latest version.\n"
+					/*: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");*/
+					: "\n\n\n\n\n  You cannot install the latest hourly \n  at this time.\n");
+			} else {
+				std::printf("\n\n\n  A new stable version of Luma3DS is available.\n");
+			}
 		} else {
-			std::printf("\n\n\n  A new stable version of Luma3DS is available.\n");
+			std::printf("\n\n\n\n  %sCould not obtain update details.%s\n  Check that the console is connected\n  to the Internet.\n", CONSOLE_RED, CONSOLE_RESET);
 		}
 
 		consolePrintFooter();
 	}
 
-	if (status.redrawBottom) {
+	if (args.stable && status.redrawBottom) {
 		status.pageCount = drawChangelog(args.stable->name, args.stable->description, status.currentPage);
 		/*status.pageCount = drawChangelog("v" + args.stable->name, args.stable->description, status.currentPage);*/
 		consoleScreen(GFX_TOP);
@@ -202,15 +209,17 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	consoleMoveTo(0, y);
 
 	// Wrap around cursor
-	int optionCount = args.stable->versions.size() + (args.backupExists ? 1 : 0);
+	int optionCount = (args.stable ? args.stable->versions.size() : 0) + (args.backupExists ? 1 : 0);
 	while (status.selected < 0) status.selected += optionCount;
 	status.selected = status.selected % optionCount;
 
 	// Print options
 	int curOption = 0;
-	for (ReleaseVer r : args.stable->versions) {
-		std::printf("     Install %s\n", r.friendlyName.c_str());
-		++curOption;
+	if(args.stable) {
+		for (ReleaseVer r : args.stable->versions) {
+			std::printf("     Install %s\n", r.friendlyName.c_str());
+			++curOption;
+		}
 	}
 
 	hourlyOptionStart = curOption;
@@ -232,8 +241,10 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 	}
 
 	// Print cursor
-	consoleMoveTo(3, y + status.selected);
-	std::printf("\x10");
+	if(curOption > 0) {
+		consoleMoveTo(3, y + status.selected);
+		std::printf("\x10");
+	}
 
 	// Reset redraw vars
 	redraw = false;
@@ -563,10 +574,8 @@ int main(int argc, char* argv[]) {
 		updateInfo.stable = &release;
 	} catch (const std::runtime_error& e) {
 		logPrintf("%s\n", e.what());
-		logPrintf("\nFATAL ERROR\nFailed to obtain required data.\n\nPress START to exit.\n");
+		logPrintf("\nWARN\nCould not obtain latest release, skipping...\n");
 		gfxFlushBuffers();
-		WAIT_START
-		goto cleanup;
 	}
 
 	consoleScreen(GFX_TOP);
