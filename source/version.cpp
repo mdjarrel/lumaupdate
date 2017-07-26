@@ -15,11 +15,8 @@ std::string getCommit(std::string commitString) {
 
 const std::string LumaVersion::toString(bool printBranch) const {
 	std::string currentVersionStr = release;
-	if (!commit.empty()) {
-		std::string fixedCommit = getCommit(commit);
-
-		currentVersionStr += "-" + fixedCommit;
-	}
+	if (!commit.empty())
+		currentVersionStr += "-" + getCommit(commit);
 	
 	return currentVersionStr;
 }
