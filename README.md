@@ -10,6 +10,12 @@ Originally from [Hamcha's wiki](https://github.com/Hamcha/lumaupdate/wiki):
 
 For SigHax Users
 1. Install Luma Updater's CIA then launch it.
+2. Select latest stable version.
+
+For HBL/Rosalina Users
+1. Enable Patch ARM9 access in your Luma3DS configuratation
+2. Launch the HBL then Luma Updater.
+3. Select latest stable version.
 
 ## To possibly work on
 * Display hourly release notes when selected
