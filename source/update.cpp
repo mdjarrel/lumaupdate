@@ -141,7 +141,7 @@ UpdateResult update(const UpdateInfo& args) {
 
 	consoleScreen(GFX_BOTTOM);
 	consoleClear();
-	logPrintf("Do you want to enable downloading boot.firm on CTR-NAND?\n Press A + X to enable\n Press B to disable\n");
+	logPrintf("Do you want to enable downloading boot.firm on CTR-NAND?\n Press A + X to enable\n Press B to disable\n\n\nEnabling allows you to update the SD-less version of Luma3DS as well. If in doubt, you should enable this option.");
 	while(aptMainLoop())
 	{
 		hidScanInput();
