@@ -192,18 +192,6 @@ UpdateResult update(const UpdateInfo& args) {
 		return { false, "DOWNLOAD FAILED" };
 	}
 
-	if (args.payloadType == PayloadType::SIGHAX && args.payloadPath != std::string("/") + DEFAULT_SIGHAX_PATH) {
-		consoleScreen(GFX_TOP);
-		consoleSetProgressData("Applying path changing", 0.6);
-		consoleScreen(GFX_BOTTOM);
-
-		logPrintf("Requested payload path is not %s, applying path patch...\n", DEFAULT_SIGHAX_PATH);
-		if (!pathchange(payloadData + offset, payloadSize, args.payloadPath)) {
-			std::free(payloadData);
-			return { false, "PATHCHANGE FAILED" };
-		}
-	}
-
 	if (args.migrateARN) {
 		consoleScreen(GFX_TOP);
 		consoleSetProgressData("Migrating AuReiNand -> Luma3DS", 0.8);
