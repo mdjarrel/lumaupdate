@@ -180,13 +180,13 @@ UpdateResult update(const UpdateInfo& args) {
 	consoleSetProgressData("Downloading payload", 0.3);
 	consoleScreen(GFX_BOTTOM);
 
-	logPrintf("Downloading %s\n", args.chosenVersion.url.c_str());
+	logPrintf("Downloading %s\n", args.chosenVersion().url.c_str());
 	gfxFlushBuffers();
 
 	u8* payloadData = nullptr;
 	size_t offset = 0;
 	size_t payloadSize = 0;
-	if (!releaseGetPayload(args.payloadType, args.chosenVersion, args.isHourly, &payloadData, &offset, &payloadSize)) {
+	if (!releaseGetPayload(args.payloadType, args.chosenVersion(), args.isHourly, &payloadData, &offset, &payloadSize)) {
 		logPrintf("FATAL\nCould not get sighax payload...\n");
 		std::free(payloadData);
 		return { false, "DOWNLOAD FAILED" };
