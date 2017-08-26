@@ -61,7 +61,7 @@ struct UpdateInfo {
 	// Chosen settings
 	UpdateChoice choice = UpdateChoice(ChoiceType::NoChoice);
 
-  ReleaseVer chosenVersion = choice.chosenVersion;
+  ReleaseVer chosenVersion() const { return choice.chosenVersion; }
   bool isHourly = choice.isHourly;
 };
 
