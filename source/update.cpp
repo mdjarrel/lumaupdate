@@ -141,7 +141,8 @@ UpdateResult update(const UpdateInfo& args) {
 
 	consoleScreen(GFX_BOTTOM);
 	consoleClear();
-	logPrintf("Do you want to enable downloading boot.firm on CTR-NAND?\n Press A + X to enable\n Press B to disable\n\n\nEnabling allows you to update the SD-less version of Luma3DS as well. If in doubt, you should enable this option.");
+	logPrintf("Do you want to enable downloading boot.firm on CTR-NAND?\n Press A + X to enable\n Press B to disable\n\n\nEnabling allows you to update the SD-less version of Luma3DS as well. If in doubt, you should enable this option.\n");
+	gfxFlushBuffers();
 	while(aptMainLoop())
 	{
 		hidScanInput();
@@ -180,28 +181,16 @@ UpdateResult update(const UpdateInfo& args) {
 	consoleSetProgressData("Downloading payload", 0.3);
 	consoleScreen(GFX_BOTTOM);
 
-	logPrintf("Downloading %s\n", args.chosenVersion.url.c_str());
+	logPrintf("Downloading %s\n", args.chosenVersion().url.c_str());
 	gfxFlushBuffers();
 
 	u8* payloadData = nullptr;
 	size_t offset = 0;
 	size_t payloadSize = 0;
-	if (!releaseGetPayload(args.payloadType, args.chosenVersion, args.isHourly, &payloadData, &offset, &payloadSize)) {
+	if (!releaseGetPayload(args.payloadType, args.chosenVersion(), args.isHourly, &payloadData, &offset, &payloadSize)) {
 		logPrintf("FATAL\nCould not get sighax payload...\n");
 		std::free(payloadData);
 		return { false, "DOWNLOAD FAILED" };
-	}
-
-	if (args.payloadType == PayloadType::SIGHAX && args.payloadPath != std::string("/") + DEFAULT_SIGHAX_PATH) {
-		consoleScreen(GFX_TOP);
-		consoleSetProgressData("Applying path changing", 0.6);
-		consoleScreen(GFX_BOTTOM);
-
-		logPrintf("Requested payload path is not %s, applying path patch...\n", DEFAULT_SIGHAX_PATH);
-		if (!pathchange(payloadData + offset, payloadSize, args.payloadPath)) {
-			std::free(payloadData);
-			return { false, "PATHCHANGE FAILED" };
-		}
 	}
 
 	if (args.migrateARN) {
