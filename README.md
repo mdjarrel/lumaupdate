@@ -18,8 +18,7 @@ For HBL/Rosalina Users:
 3. Select latest stable version.
 
 ## To possibly work on
-* Display hourly release notes when selected
-* Find out why lumaupdater.cfg isn't working for people.
+* N/A
 
 
 ## Compiling Requirements
@@ -68,3 +67,5 @@ Refer to `LICENSE.libmd5-rfc.txt` for the full text.
 - Makefiles are somewhat derived by stripping down [Steveice10](https://github.com/Steveice10)'s buildtools
 - CIA jingle by [Cydon @ FreeSound](https://www.freesound.org/people/cydon/)
 - Original code by [Hamcha](https://github.com/Hamcha/lumaupdate)
+- Modifications to code by [chenzw95](https://github.com/chenzw95), [Pirater12](https://github.com/pirater12), and [gnmmarechal](https://github.com/gnmmarechal)
+- Custom boot animation by [mariohackandglitch](https://github.com/mariohackandglitch)
