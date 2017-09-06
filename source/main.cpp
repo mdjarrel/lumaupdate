@@ -179,20 +179,20 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			std::printf("  Latest version (Github):   %s%s%s\n", CONSOLE_GREEN, args.stable->name.c_str(), CONSOLE_RESET);
 		}
 
-		if (args.hourly != nullptr) {
+		/*if (args.hourly != nullptr) {
 			haveLatestCommit = args.currentVersion.commit == args.hourly->commits[args.currentVersion
 				.isDev ? "dev hourly" : "hourly"];
 			std::printf("  Latest hourly build:       %s%s%s\n", CONSOLE_GREEN, args.hourly->name.c_str(), CONSOLE_RESET);
-		}
+		}*/
 
 		if (args.stable) {
 			if(haveLatestStable) {
 				std::printf(haveLatestCommit || args.currentVersion.commit.empty()
-					? "\n  You have the latest version.\n"
+					? "\n  You cannot install the latest hourly \n  at this time.\n"
 					/*: "\n\n\n\n\n  A new hourly build of Luma3DS is available.\n");*/
-					: "\n\n\n\n\n  You cannot install the latest hourly \n  at this time.\n");
+					: "\n\n\n\n\n  You have the latest stable version. \n");
 			} else {
-				std::printf("\n\n\n  A new stable version of Luma3DS is available.\n");
+				std::printf("\n\n\n\n\n  A new stable version of Luma3DS is available.\n");
 			}
 		} else {
 			std::printf("\n\n\n\n  %sCould not obtain update details.%s\n  Check that the console is connected\n  to the Internet.\n", CONSOLE_RED, CONSOLE_RESET);
