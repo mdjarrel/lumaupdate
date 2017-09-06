@@ -159,6 +159,10 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 			(args.backupExisting ? "Yes" : "No"),
 			CONSOLE_RESET);
 
+		if(args.stable != nullptr) {
+			haveLatestStable = args.currentVersion.release == args.stable->name;
+		}
+
 		if (args.currentVersion.isValid()) {
 			std::printf("  Current installed version: %s%s%s\n", (haveLatestStable ? CONSOLE_GREEN : CONSOLE_RED), args.currentVersion.toString().c_str(), CONSOLE_RESET);
 		} else {
@@ -172,7 +176,6 @@ static UpdateChoice drawConfirmationScreen(const UpdateInfo& args, const bool us
 					args.backupVersion.toString().c_str(),
 					CONSOLE_RESET);
 			}
-			haveLatestStable = args.currentVersion.release == args.stable->name;
 			std::printf("  Latest version (Github):   %s%s%s\n", CONSOLE_GREEN, args.stable->name.c_str(), CONSOLE_RESET);
 		}
 
