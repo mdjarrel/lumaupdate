@@ -13,12 +13,12 @@
 - [ ] New 2DS XL
 
 ### What is your current Luma3DS version?
+If you are running an hourly version of Luma3DS, please manually update to a stable version as I will no longer deal with people who are using hourlies.
+
 - [ ] Luma3DS v7.1 + boot9strap v1.0/v1.1
 - [ ] Luma3DS v8.0 + boot9strap v1.2+
 - [ ] Luma3DS v8.1 + boot9strap v1.2+
 - [ ] Luma3DS v8.1.1 + boot9strap v1.2+
-
-If you are running an hourly version of Luma3DS, please manually update to a stable version as I will no longer deal with people who are using hourlies.
 
 ### What version of Luma Updater are you using?
 - [ ] v2.0
