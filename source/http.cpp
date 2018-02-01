@@ -13,10 +13,7 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	CHECK(httpcOpenContext(&context, HTTPC_METHOD_GET, (char*)url, 0), "Could not open HTTP context");
 	// Add User Agent field (required by Github API calls)
 	CHECK(httpcAddRequestHeaderField(&context, (char*)"User-Agent", (char*)"LUMA-UPDATER"), "Could not set User Agent");
-
-	// Add root CA required for Github and AWS URLs
-	CHECK(httpcAddTrustedRootCA(&context, cybertrust_cer, cybertrust_cer_len), "Could not add Cybertrust root CA");
-	CHECK(httpcAddTrustedRootCA(&context, digicert_cer, digicert_cer_len), "Could not add Digicert root CA");
+	CHECK(httpcSetSSLOpt(&context, 1<<9), "httpcSetSSLOpt failed");
 
 	CHECK(httpcBeginRequest(&context), "Could not begin request");
 
