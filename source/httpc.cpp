@@ -38,6 +38,7 @@ Result HTTPC::OpenContext(httpcContext *context, HTTPC_RequestMethod method, cha
 	curl_easy_setopt(this->handle, CURLOPT_HEADERFUNCTION, header_function);
 	curl_easy_setopt(this->handle, CURLOPT_HEADERDATA, &this->headers);
 	s_size_to_recieve = 0;
+	this->headers.clear(); 
 	
 	switch(method)
 	{

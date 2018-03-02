@@ -32,7 +32,7 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	// Retrieve extra info if required
 	if (info != nullptr) {
 		char etagChr[512] = { 0 };
-		if (httpc.GetResponseHeader(&context, (char*)"Etag", etagChr, 512) == 0) {
+		if (httpc.GetResponseHeader(&context, (char*)"ETag", etagChr, 512) == 0) {
 			info->etag = std::string(etagChr);
 		}
 	}
