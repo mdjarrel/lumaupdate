@@ -1,30 +1,28 @@
 #include "http.h"
+#include "httpc.h"
 
 #include "utils.h"
-
-#include "certs/cybertrust.h"
-#include "certs/digicert.h"
 
 // libmd5-rfc includes
 #include "md5/md5.h"
 
+HTTPC httpc;
 void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPResponseInfo* info) {
 	httpcContext context;
-	CHECK(httpcOpenContext(&context, HTTPC_METHOD_GET, (char*)url, 0), "Could not open HTTP context");
+	CHECK(httpc.OpenContext(&context, HTTPC_METHOD_GET, (char*)url, 0), "Could not open HTTP context");
 	// Add User Agent field (required by Github API calls)
-	CHECK(httpcAddRequestHeaderField(&context, (char*)"User-Agent", (char*)"LUMA-UPDATER"), "Could not set User Agent");
-	CHECK(httpcSetSSLOpt(&context, 1<<9), "httpcSetSSLOpt failed");
+	CHECK(httpc.AddRequestHeaderField(&context, (char*)"User-Agent", (char*)"LUMA-UPDATER"), "Could not set User Agent");
 
-	CHECK(httpcBeginRequest(&context), "Could not begin request");
+	CHECK(httpc.BeginRequest(&context), "Could not begin request");
 
 	u32 statuscode = 0;
-	CHECK(httpcGetResponseStatusCode(&context, &statuscode), "Could not get status code");
+	CHECK(httpc.GetResponseStatusCode(&context, &statuscode), "Could not get status code");
 	if (statuscode != 200) {
 		// Handle 3xx codes
 		if (statuscode >= 300 && statuscode < 400) {
 			char newUrl[1024];
-			CHECK(httpcGetResponseHeader(&context, (char*)"Location", newUrl, 1024), "Could not get Location header for 3xx reply");
-			CHECK(httpcCloseContext(&context), "Could not close HTTP context");
+			CHECK(httpc.GetResponseHeader(&context, (char*)"Location", newUrl, 1024), "Could not get Location header for 3xx reply");
+			CHECK(httpc.CloseContext(&context), "Could not close HTTP context");
 			httpGet(newUrl, buf, size, verbose, info);
 			return;
 		}
@@ -34,7 +32,7 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	// Retrieve extra info if required
 	if (info != nullptr) {
 		char etagChr[512] = { 0 };
-		if (httpcGetResponseHeader(&context, (char*)"Etag", etagChr, 512) == 0) {
+		if (httpc.GetResponseHeader(&context, (char*)"Etag", etagChr, 512) == 0) {
 			info->etag = std::string(etagChr);
 		}
 	}
@@ -44,7 +42,7 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	u32 dlpos = 0;
 	Result dlret = HTTPC_RESULTCODE_DOWNLOADPENDING;
 
-	CHECK(httpcGetDownloadSizeState(&context, &dlstartpos, size), "Could not get file size");
+	CHECK(httpc.GetDownloadSizeState(&context, &dlstartpos, size), "Could not get file size");
 
 	*buf = (u8*)std::malloc(*size);
 	if (*buf == NULL) throw std::runtime_error(formatErrMessage("Could not allocate enough memory", *size));
@@ -53,8 +51,8 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 	while (pos < *size && dlret == (s32)HTTPC_RESULTCODE_DOWNLOADPENDING)
 	{
 		u32 sz = *size - pos;
-		dlret = httpcReceiveData(&context, *buf + pos, sz);
-		CHECK(httpcGetDownloadSizeState(&context, &dlpos, NULL), "Could not get file size");
+		dlret = httpc.ReceiveData(&context, *buf + pos, sz);
+		CHECK(httpc.GetDownloadSizeState(&context, &dlpos, NULL), "Could not get file size");
 		pos = dlpos - dlstartpos;
 		if (verbose) {
 			logPrintf("Download progress: %lu / %lu", dlpos, *size);
@@ -66,7 +64,7 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 		logPrintf("\n");
 	}
 
-	CHECK(httpcCloseContext(&context), "Could not close HTTP context");
+	CHECK(httpc.CloseContext(&context), "Could not close HTTP context");
 }
 
 

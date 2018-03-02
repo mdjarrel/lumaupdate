@@ -9,6 +9,7 @@
 #include "release.h"
 #include "utils.h"
 #include "version.h"
+#include "httpc.h"
 
 #define WAIT_START while (aptMainLoop() && !(hidKeysDown() & KEY_START)) { gspWaitForVBlank(); hidScanInput(); }
 
@@ -405,7 +406,7 @@ int main(int argc, char* argv[]) {
 	aptInit();
 	amInit();
 	gfxInitDefault();
-	httpcInit(0);
+	httpc.Init(0);
 
 	consoleInitEx();
 
@@ -706,7 +707,7 @@ int main(int argc, char* argv[]) {
 
 cleanup:
 	// Exit services
-	httpcExit();
+	httpc.Exit();
 	gfxExit();
 	amExit();
 	aptExit();
