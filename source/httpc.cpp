@@ -30,6 +30,7 @@ Result HTTPC::Init(u32 mem)
 
 Result HTTPC::OpenContext(httpcContext *context, HTTPC_RequestMethod method, char* url, u32 use_defaultproxy)
 {
+	this->headers.clear();
 	this->handle = curl_easy_init();
 	curl_easy_setopt(this->handle, CURLOPT_URL, url);
 	curl_easy_setopt(this->handle, CURLOPT_VERBOSE, 0L);	
@@ -38,7 +39,6 @@ Result HTTPC::OpenContext(httpcContext *context, HTTPC_RequestMethod method, cha
 	curl_easy_setopt(this->handle, CURLOPT_HEADERFUNCTION, header_function);
 	curl_easy_setopt(this->handle, CURLOPT_HEADERDATA, &this->headers);
 	s_size_to_recieve = 0;
-	this->headers.clear(); 
 	
 	switch(method)
 	{
