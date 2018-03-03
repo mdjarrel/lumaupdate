@@ -42,7 +42,7 @@ _3DSXFLAGS += --smdh=$(CURDIR)/$(TARGET).smdh
 
 ARCH     := -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS   := -g -Wall -Wextra -pedantic -mword-relocations \
+CFLAGS   := -g -w -pedantic -mword-relocations \
             -fomit-frame-pointer -ffunction-sections \
             $(ARCH) $(EXTRACFLAGS)
 
