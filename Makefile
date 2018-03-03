@@ -28,11 +28,11 @@ LD       := $(CXX)
 
 INCLUDE  := $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
             $(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-            $(foreach dir,$(PORTLIBS),-I$(dir)/include) \
+            $(foreach dir,$(CURDIR),-I$(dir)/external/include) \
             -I$(CURDIR)/$(BUILD)
 
 LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-            $(foreach dir,$(PORTLIBS),-L$(dir)/lib)
+            $(foreach dir,$(CURDIR),-L$(dir)/external/libs) 
 
 APP_ICON := $(CURDIR)/$(ICON)
 
