@@ -24,3 +24,6 @@ build
 
 # Hamcha's terrible commands
 send.cmd
+
+# Bannertool.exe and makerom.exe
+*.exe
