@@ -27,3 +27,6 @@ send.cmd
 
 # Bannertool.exe and makerom.exe
 *.exe
+
+# .txt files
+*.txt
