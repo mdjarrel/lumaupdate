@@ -27,6 +27,7 @@ If you are running an hourly version of Luma3DS, please manually update to a sta
 - [ ] v2.1.1
 - [ ] v2.1.2
 - [ ] v2.2
+- [ ] v2.3
 
 ### How are you running Luma Updater?
 - [ ] .cia
