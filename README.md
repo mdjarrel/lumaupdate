@@ -2,24 +2,23 @@
 
 Formerly known as "ARN Updater"
 
-A `boot.firm` updater for Luma3DS and SigHax (formerly AuReiNand) as a 3DS homebrew (no more SD swaps!)
+A `boot.firm` updater for Luma3DS and boot9strap (formerly AuReiNand) as a 3DS homebrew (no more SD swaps!)
 
 ## Usage
 
 Originally from [Hamcha's wiki](https://github.com/Hamcha/lumaupdate/wiki):
 
-For SigHax Users:
+For boot9strap Users:
 1. Install Luma Updater's CIA then launch it.
 2. Select latest stable version.
 
 For HBL/Rosalina Users:
-1. Enable Patch ARM9 access in your Luma3DS configuratation
+1. Enable Patch ARM9 access in your Luma3DS configuration (may not be needed depending on your Luma version).
 2. Launch the HBL then Luma Updater.
 3. Select latest stable version.
 
 ## To possibly work on
 * N/A
-
 
 ## Compiling Requirements
 
