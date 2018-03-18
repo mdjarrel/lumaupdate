@@ -25,9 +25,6 @@ For HBL/Rosalina Users:
 - Your usual 3DS compilation environment
 - Latest* ctrulib (the one currently bundled with devKitPro won't cut it)
 - [makerom](http://3dbrew.org/wiki/Makerom) and [bannertool](https://github.com/Steveice10/bannertool) somewhere in your `PATH` environment
-- zlib (get it from [devkitPro/3ds_portlibs](https://github.com/devkitPro/3ds_portlibs))
-
-<sup>* ctrulib has breaking changes every once in a while so if you have trouble compiling, the latest tested working commit is [ada9559](https://github.com/smealum/ctrulib/commit/ada9559c11ab1870a9f25ac86c66bbacba206735)</sup>
 
 #### Optional
 
