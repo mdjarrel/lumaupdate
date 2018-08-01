@@ -20,6 +20,7 @@ If you are running an hourly version of Luma3DS, please manually update to a sta
 - [ ] Luma3DS v8.1 + boot9strap v1.2+
 - [ ] Luma3DS v8.1.1 + boot9strap v1.2+
 - [ ] Luma3DS v9.0 + boot9strap v1.2+
+- [ ] Luma3DS v9.1 + boot9strap v1.2+
 
 ### What version of Luma Updater are you using?
 - [ ] v2.0
