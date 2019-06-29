@@ -249,14 +249,9 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	}
 
 	try {
-		if (isHourly) {
-			ZipArchive archive(fileData, fileSize);
-			archive.extractFile(std::string("out/") + payloadPath, payloadData, payloadSize);
-			offset = 0;
-		} else {
-			SzArchive archive(fileData, fileSize);
-			archive.extractFile(payloadPath, payloadData, payloadSize, offset);
-		}
+		ZipArchive archive(fileData, fileSize);
+		archive.extractFile(payloadPath, payloadData, payloadSize);
+		offset = 0;
 	} catch (const std::runtime_error& e) {
 		logPrintf(" [ERR]\nFATAL: %s", e.what());
 		std::free(fileData);
