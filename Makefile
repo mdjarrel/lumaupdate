@@ -12,7 +12,7 @@ include $(CURDIR)/$(CFGFILE)
 TARGET   := $(BINDIR)/$(BINNAME)
 
 LIBS     := $(foreach lib,$(LIBRARIES),-l$(lib))
-LIBDIRS  := $(CTRULIB)
+LIBDIRS  := $(CTRULIB) $(PORTLIBS)
 
 OUTPUT   := $(CURDIR)/$(TARGET)
 
