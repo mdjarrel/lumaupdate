@@ -30,3 +30,6 @@ send.cmd
 
 # .txt files
 *.txt
+
+# external folder
+external
