@@ -1,4 +1,6 @@
 #include "httpc.h"
+#include <algorithm>
+#include <cctype>
 
 static size_t s_size_to_recieve = 0; 
 static size_t s_content_length = 0; 
@@ -82,14 +84,28 @@ Result HTTPC::BeginRequest(httpcContext *context)
 }
 
 Result HTTPC::GetResponseHeader(httpcContext *context, char* _name, char* _value, u32 valuebuf_maxsize)
-{
+{ // Headers are not case sensitive: https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
+	char lowercasename[1024];
+	int namelen = 0;
+	unsigned char s;
+	do 
+	{
+		lowercasename[namelen] = s = std::tolower(_name[namelen]);
+		namelen++;
+	} while (s != '\0');
+	namelen--;
+	
 	for(int i = 0; i < this->headers.size(); i++)
 	{
-		if(this->headers[i].find(_name)!= std::string::npos)
+		std::string lowerhdr = this->headers[i];
+		std::transform(lowerhdr.begin(), lowerhdr.end(), lowerhdr.begin(), [](unsigned char c){ return std::tolower(c); });
+		size_t pos = lowerhdr.find(lowercasename);
+		if(pos != std::string::npos)
 		{
-			size_t pos = this->headers[i].find(_name);
-			this->headers[i].erase(pos, strlen(_name) + 2);
-			strcpy(_value, this->headers[i].c_str());
+			this->headers[i].erase(pos, namelen + 1);
+			const char* val = this->headers[i].c_str();
+			while (*val == ' ') val++; // Header values may or may not have any number of spaces prior to the actual value.
+			strcpy(_value, val);
 			return 0;
 		}
 	}
