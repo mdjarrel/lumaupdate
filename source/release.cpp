@@ -25,10 +25,10 @@ ReleaseInfo releaseGetLatestStable() {
 	// Citra doesn't support HTTPc right now, so just fake a successful request
 	release.name = "5.2";
 	release.description = "- Remade the chainloader to only try to load the right payload for the pressed button. Now the only buttons which have a matching payload will actually do something during boot\r\n- Got rid of the default payload (start now boots \"start_NAME.bin\")\r\n- sel_NAME.bin is now select_NAME.bin as there are no more SFN/8.3 limitations anymore\r\n\r\nRefer to [the wiki](https://github.com/AuroraWright/Luma3DS/wiki/Installation-and-Upgrade#upgrading-from-v531) for upgrade instructions.";
-	release.versions.push_back(ReleaseVer{ "CITRA", "CITRA", "https://github.com/AuroraWright/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });
+	release.versions.push_back(ReleaseVer{ "CITRA", "CITRA", "https://github.com/LumaTeam/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });
 #else
 
-	static const char* ReleaseURL = "https://api.github.com/repos/AuroraWright/Luma3DS/releases/latest";
+	static const char* ReleaseURL = "https://api.github.com/repos/LumaTeam/Luma3DS/releases/latest";
 
 	jsmn_parser p = {};
 	jsmn_init(&p);
@@ -121,7 +121,7 @@ ReleaseInfo releaseGetLatestHourly() {
 #ifdef FAKEDL
 	// Citra doesn't support HTTPc right now, so just fake a successful request
 	hourly.name = "aaaaaaa";
-	hourly.versions.push_back(ReleaseVer{ "CITRA", "latest hourly (aaaaaaa)", "https://github.com/AuroraWright/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });*/
+	hourly.versions.push_back(ReleaseVer{ "CITRA", "latest hourly (aaaaaaa)", "https://github.com/LumaTeam/Luma3DS/releases/download/v5.2/Luma3DSv5.2.7z", 143234 });*/
 	
 #else
 
