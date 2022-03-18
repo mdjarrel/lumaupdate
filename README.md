@@ -1,5 +1,7 @@
 # Luma Updater
 
+Development on this has stopped. Please stop opening new issues.
+
 Formerly known as "ARN Updater"
 
 A `boot.firm` updater for Luma3DS and boot9strap (formerly AuReiNand) as a 3DS homebrew (no more SD swaps!)
