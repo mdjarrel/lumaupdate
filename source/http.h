@@ -5,6 +5,7 @@
 /*! \brief Optional extra httpGet informations */
 struct HTTPResponseInfo {
 	std::string etag; //!< ETag (for AWS S3 requests)
+	std::string contentmd5; //!< Content-MD5 (for validation)
 };
 
 /*! \brief Makes a GET HTTP request
