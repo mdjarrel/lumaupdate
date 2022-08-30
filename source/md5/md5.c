@@ -137,10 +137,10 @@ md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
     md5_word_t t;
 #if BYTE_ORDER > 0
     /* Define storage only for big-endian CPUs. */
-    md5_word_t X[16];
+    md5_word_t X[MD5_DIGEST_LENGTH];
 #else
     /* Define storage for little-endian or both types of CPUs. */
-    md5_word_t xbuf[16];
+    md5_word_t xbuf[MD5_DIGEST_LENGTH];
     const md5_word_t *X;
 #endif
 
@@ -188,7 +188,7 @@ md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 #  else
 #    define xbuf X		/* (static only) */
 #  endif
-	    for (i = 0; i < 16; ++i, xp += 4)
+	    for (i = 0; i < MD5_DIGEST_LENGTH; ++i, xp += 4)
 		xbuf[i] = xp[0] + (xp[1] << 8) + (xp[2] << 16) + (xp[3] << 24);
 	}
 #endif
@@ -358,7 +358,7 @@ md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes)
 }
 
 void
-md5_finish(md5_state_t *pms, md5_byte_t digest[16])
+md5_finish(md5_state_t *pms, md5_byte_t digest[MD5_DIGEST_LENGTH])
 {
     static const md5_byte_t pad[64] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -376,6 +376,6 @@ md5_finish(md5_state_t *pms, md5_byte_t digest[16])
     md5_append(pms, pad, ((55 - (pms->count[0] >> 3)) & 63) + 1);
     /* Append the length. */
     md5_append(pms, data, 8);
-    for (i = 0; i < 16; ++i)
+    for (i = 0; i < MD5_DIGEST_LENGTH; ++i)
 	digest[i] = (md5_byte_t)(pms->abcd[i >> 2] >> ((i & 3) << 3));
 }
