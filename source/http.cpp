@@ -6,6 +6,9 @@
 // libmd5-rfc includes
 #include "md5/md5.h"
 
+// base64 by Rene Nyffenegger includes
+#include "base64/base64.h"
+
 #define ETAG_LENGTH 512
 #define CONTENT_MD5_LENGTH 24
 
