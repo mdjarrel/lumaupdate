@@ -79,21 +79,17 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 
 
 bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
-	std::string md5;
-	
 	// Strip quotes from either side of the etag
 	if (etag[0] == '"') {
-		md5 = etag.substr(1, etag.length() - 2);
+		etag = etag.substr(1, etag.length() - 2);
 	}
 
-	return httpCheckMD5(md5, fileData, fileSize);
+	return httpCheckMD5(etag, fileData, fileSize);
 }
 
 bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 fileSize) {
-	std::string md5;
-	
 	// Base64 decode Content-MD5 string
-	md5 = base64_decode(contentmd5);
+	std::string md5 = base64_decode(contentmd5);
 	
 	return httpCheckMD5(md5, fileData, fileSize);
 }
