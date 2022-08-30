@@ -189,6 +189,8 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	u8* fileData = nullptr;
 	u32 fileSize = 0;
 	HTTPResponseInfo info;
+	bool integritycheck2a = true;
+	bool integritycheck2b = true;
 
 	try {
 #ifdef FAKEDL
@@ -221,15 +223,32 @@ bool releaseGetPayload(const PayloadType payloadType, const ReleaseVer& release,
 	}
 
 	if (!info.etag.empty()) {
-		logPrintf("Integrity check #2");
+		logPrintf("Integrity check #2a");
 		if (!httpCheckETag(info.etag, fileData, fileSize)) {
-			logPrintf(" [ERR]\r\nMD5 mismatch between server's and local file!\n");
+			logPrintf(" [ERR]\r\nETag MD5 mismatch between server's and local file!\n");
 			gfxFlushBuffers();
-			return false;
+			integritycheck2a = false;
 		}
 		logPrintf(" [OK]\r\n");
 	} else {
-		logPrintf("Skipping integrity check #2 (no ETag found)\n");
+		logPrintf("Skipping integrity check #2a (no ETag found)\n");
+	}
+	
+	if (!info.contentmd5.empty()) {
+		logPrintf("Integrity check #2b");
+		if (!httpCheckContentMD5(info.contentmd5, fileData, fileSize)) {
+			logPrintf(" [ERR]\r\nContent-MD5 MD5 mismatch between server's and local file!\n");
+			gfxFlushBuffers();
+			integritycheck2b = false;
+		}
+		logPrintf(" [OK]\r\n");
+	} else {
+		logPrintf("Skipping integrity check #2b (no Content-MD5 found)\n");
+	}
+	
+	// Both integrity check 2a and 2b must fail.
+	if (!integritycheck2a && !integritycheck2b) {
+		return false;
 	}
 
 	logPrintf("\nExtracting payload");
