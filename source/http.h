@@ -28,3 +28,25 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose = false, H
  *  \return true if the check succeeds (md5 match), false otherwise
  */
 bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize);
+
+
+/*! \brief Check for file integrity via Content-MD5 (MD5)
+ *
+ *  \param contentmd5     Content-MD5 header string
+ *  \param fileData Pointer to file data to check
+ *  \param fileSize Size of the file to check
+ *
+ *  \return true if the check succeeds (md5 match), false otherwise
+ */
+bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 fileSize);
+
+
+/*! \brief Check for file integrity via MD5
+ *
+ *  \param md5     MD5 string
+ *  \param fileData Pointer to file data to check
+ *  \param fileSize Size of the file to check
+ *
+ *  \return true if the check succeeds (md5 match), false otherwise
+ */
+bool httpCheckMD5(std::string md5, const u8* fileData, const u32 fileSize);
