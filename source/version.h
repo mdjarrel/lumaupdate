@@ -23,7 +23,7 @@ LumaVersion versionSvc();
  *
  *  \return LumaVersion struct containing all the information that could be retrieved
  */
-LumaVersion versionSvcGetSystemInfo()
+LumaVersion versionSvcGetSystemInfo();
 
 /*! \brief Tries to detect currently installed Luma3DS/AuReiNand version by searching the payload
  *
