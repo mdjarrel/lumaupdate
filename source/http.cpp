@@ -94,7 +94,7 @@ bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 f
 	// Base64 decode Content-MD5 string
 	std::string md5Raw = base64_decode(contentmd5);
 	std::string md5 = "";
-	const char buffer[BUFFER_LENGTH] = {0};
+	char buffer[BUFFER_LENGTH] = {0};
 	
 	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
 		std:snprintf(buffer, BUFFER_LENGTH, "%02x", md5Raw[i]);
