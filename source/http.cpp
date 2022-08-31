@@ -91,7 +91,14 @@ bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
 
 bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 fileSize) {
 	// Base64 decode Content-MD5 string
-	std::string md5 = base64_decode(contentmd5);
+	std::string md5Raw = base64_decode(contentmd5));
+	std::string md5 = "";
+	u8* buffer[3] = {0};
+	
+	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
+		std:snprintf(buffer, "%02x", mdfRaw[i]);
+		md5 += buffer;
+	}	
 	
 	return httpCheckMD5(md5, fileData, fileSize);
 }
