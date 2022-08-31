@@ -13,8 +13,6 @@
 #define CONTENT_MD5_LENGTH 24
 #define BUFFER_LENGTH 3
 
-void printMD5(const u8* md5Data);
-
 HTTPC httpc;
 void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPResponseInfo* info) {
 	httpcContext context;
@@ -111,9 +109,6 @@ bool httpCheckMD5(std::string md5, const u8* fileData, const u32 fileSize) {
 	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
 		std::sscanf(md5chr + (i * 2), "%02x", &expected[i]);
 	}
-	
-	logPrintf("\ncStr: %s\n", md5chr);
-	gfxFlushBuffers();
 
 	// Calculate MD5 hash of downloaded archive
 	md5_state_t state;
@@ -121,19 +116,6 @@ bool httpCheckMD5(std::string md5, const u8* fileData, const u32 fileSize) {
 	md5_init(&state);
 	md5_append(&state, (const md5_byte_t *)fileData, fileSize);
 	md5_finish(&state, result);
-	
-	logPrintf("Expected: ");
-	printMD5(expected);
-	logPrintf("Result: ");
-	printMD5(result);
 
 	return memcmp(expected, result, MD5_DIGEST_LENGTH) == 0;
-}
-
-void printMD5(const u8* md5Data) {
-	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
-		logPrintf("%02x", md5Data[i]);
-	}
-	logPrintf("\n");
-	gfxFlushBuffers();
 }
