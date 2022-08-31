@@ -103,11 +103,11 @@ LumaVersion versionSvcGetSystemInfo() {
 	svcGetSystemInfo(&version, 0x10000, 0);
 	if(!version)
 		return LumaVersion{};
-	int major = version >> 24;
-	int minor = version >> 16;
+	int major = (version >> 24) & 0xFF;
+	int minor = (version >> 16) & 0xFF;
 	std::string smajor = std::to_string(major);
 	std::string sminor = std::to_string(minor);
-	ver.release = "Luma3DS v" + smajor + "." + sminor;
+	ver.release = smajor + "." + sminor;
 	// Get Commit Hash
 	svcGetSystemInfo(&version, 0x10000, 1);
 	ver.commit = to_hex(version);
