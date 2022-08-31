@@ -10,7 +10,7 @@
 #define STATE_HASH  2
 #define STATE_DEV   3
 
-size_t findSearchString(char* searchString, size_t searchStringLen, char* payloadData, size_t payloadSize, size_t payloadOffset);
+size_t findSearchString(const char* searchString, size_t searchStringLen, char* payloadData, size_t payloadSize, size_t payloadOffset);
 std::string getVersion(char* payloadData, size_t payloadSize);
 
 std::string getCommit(std::string commitString) {
@@ -184,12 +184,12 @@ std::string getVersion(char* payloadData, size_t payloadSize) {
 				offset++;
 			}
 			else if ((payloadData[offset] == 0x2E) && (state == STATE_MAJOR) && (offset != lastOffset)) {
-				state = STATE_MINOR
+				state = STATE_MINOR;
 				lastOffset = offset;
 				offset++;
 			}
 			else if ((payloadData[offset] == 0x2D) && (state == STATE_MINOR) && (offset != lastOffset)) {
-				state = STATE_HASH
+				state = STATE_HASH;
 				lastOffset = offset;
 				offset++;
 			}
@@ -220,7 +220,7 @@ std::string getVersion(char* payloadData, size_t payloadSize) {
 	return version;
 }
 
-size_t findSearchString(char* searchString, size_t searchStringLen, char* payloadData, size_t payloadSize, size_t payloadOffset) {
+size_t findSearchString(const char* searchString, size_t searchStringLen, char* payloadData, size_t payloadSize, size_t payloadOffset) {
 	size_t curProposedOffset = 0;
 	unsigned short curStringIndex = 0;
 	bool found = false;
