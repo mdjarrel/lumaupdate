@@ -19,6 +19,12 @@ struct LumaVersion {
  */
 LumaVersion versionSvc();
 
+/*! \brief Tries to detect the current Luma3DS version by using svcGetSystemInfo (when supported)
+ *
+ *  \return LumaVersion struct containing all the information that could be retrieved
+ */
+LumaVersion versionSvcGetSystemInfo();
+
 /*! \brief Tries to detect currently installed Luma3DS/AuReiNand version by searching the payload
  *
  *  \param path Path to existing payload
