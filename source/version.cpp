@@ -10,6 +10,9 @@
 #define STATE_HASH  2
 #define STATE_DEV   3
 
+size_t findSearchString(char* searchString, size_t searchStringLen, char* payloadData, size_t payloadSize, size_t payloadOffset);
+std::string getVersion(char* payloadData, size_t payloadSize);
+
 std::string getCommit(std::string commitString) {
 	std::string commit = "";
 	for (int i = 0; i < 7; i++)
@@ -175,20 +178,20 @@ std::string getVersion(char* payloadData, size_t payloadSize) {
 		// Version regex should be [0-9]+\.[0-9].
 		while (!regexFound && regexValid && (offset != std::string::npos) && (offset < payloadSize)) {
 			if (isNumeric(payloadData[offset]) && ((state == STATE_MAJOR) || (state == STATE_MINOR))) {
-				offset++
+				offset++;
 			}
 			else if (isAlphaNumeric(payloadData[offset]) && ((state == STATE_MAJOR) || (state == STATE_MINOR))) {
-				offset++
+				offset++;
 			}
 			else if ((payloadData[offset] == 0x2E) && (state == STATE_MAJOR) && (offset != lastOffset)) {
 				state = STATE_MINOR
 				lastOffset = offset;
-				offset++
+				offset++;
 			}
 			else if ((payloadData[offset] == 0x2D) && (state == STATE_MINOR) && (offset != lastOffset)) {
 				state = STATE_HASH
 				lastOffset = offset;
-				offset++
+				offset++;
 			}
 			else if ((payloadData[offset] == 0x20) && 
 				 ((offset+3 < payloadSize) && (payloadData[offset+1] == 0x64) && (payloadData[offset+2] == 0x65) && (payloadData[offset+3] == 0x76)) && 
