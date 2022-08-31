@@ -6,6 +6,13 @@
 // libmd5-rfc includes
 #include "md5/md5.h"
 
+// base64 by Rene Nyffenegger includes
+#include "base64/base64.h"
+
+#define ETAG_LENGTH 512
+#define CONTENT_MD5_LENGTH 24
+#define BUFFER_LENGTH 3
+
 HTTPC httpc;
 void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPResponseInfo* info) {
 	httpcContext context;
@@ -31,9 +38,13 @@ void httpGet(const char* url, u8** buf, u32* size, const bool verbose, HTTPRespo
 
 	// Retrieve extra info if required
 	if (info != nullptr) {
-		char etagChr[512] = { 0 };
-		if (httpc.GetResponseHeader(&context, (char*)"ETag", etagChr, 512) == 0) {
+		char etagChr[ETAG_LENGTH] = { 0 };
+		if (httpc.GetResponseHeader(&context, (char*)"ETag", etagChr, ETAG_LENGTH) == 0) {
 			info->etag = std::string(etagChr);
+		}
+		char contentmd5Chr[CONTENT_MD5_LENGTH] = { 0 };
+		if (httpc.GetResponseHeader(&context, (char*)"Content-MD5", contentmd5Chr, CONTENT_MD5_LENGTH) == 0) {
+			info->contentmd5 = std::string(contentmd5Chr);
 		}
 	}
 
@@ -74,19 +85,37 @@ bool httpCheckETag(std::string etag, const u8* fileData, const u32 fileSize) {
 		etag = etag.substr(1, etag.length() - 2);
 	}
 
-	// Get MD5 bytes from Etag header
-	md5_byte_t expected[16];
-	const char* etagchr = etag.c_str();
-	for (u8 i = 0; i < 16; i++) {
-		std::sscanf(etagchr + (i * 2), "%02x", &expected[i]);
+	return httpCheckMD5(etag, fileData, fileSize);
+}
+
+bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 fileSize) {
+	// Base64 decode Content-MD5 string
+	std::string md5Raw = base64_decode(contentmd5);
+	std::string md5 = "";
+	char buffer[BUFFER_LENGTH] = {0};
+	
+	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
+		std:snprintf(buffer, BUFFER_LENGTH, "%02x", md5Raw[i]);
+		md5 += buffer;
+	}	
+	
+	return httpCheckMD5(md5, fileData, fileSize);
+}
+
+bool httpCheckMD5(std::string md5, const u8* fileData, const u32 fileSize) {
+	// Get MD5 bytes from MD5 string
+	md5_byte_t expected[MD5_DIGEST_LENGTH];
+	const char* md5chr = md5.c_str();
+	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
+		std::sscanf(md5chr + (i * 2), "%02x", &expected[i]);
 	}
 
 	// Calculate MD5 hash of downloaded archive
 	md5_state_t state;
-	md5_byte_t result[16];
+	md5_byte_t result[MD5_DIGEST_LENGTH];
 	md5_init(&state);
 	md5_append(&state, (const md5_byte_t *)fileData, fileSize);
 	md5_finish(&state, result);
 
-	return memcmp(expected, result, 16) == 0;
+	return memcmp(expected, result, MD5_DIGEST_LENGTH) == 0;
 }
