@@ -11,6 +11,7 @@
 
 #define ETAG_LENGTH 512
 #define CONTENT_MD5_LENGTH 24
+#define BUFFER_LENGTH 3
 
 void printMD5(const u8* md5Data);
 
@@ -93,10 +94,10 @@ bool httpCheckContentMD5(std::string contentmd5, const u8* fileData, const u32 f
 	// Base64 decode Content-MD5 string
 	std::string md5Raw = base64_decode(contentmd5);
 	std::string md5 = "";
-	u8 buffer[3] = {0};
+	const char buffer[BUFFER_LENGTH] = {0};
 	
 	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
-		std:snprintf(buffer, "%02x", md5Raw[i]);
+		std:snprintf(buffer, BUFFER_LENGTH, "%02x", md5Raw[i]);
 		md5 += buffer;
 	}	
 	
