@@ -103,6 +103,9 @@ bool httpCheckMD5(std::string md5, const u8* fileData, const u32 fileSize) {
 	for (u8 i = 0; i < MD5_DIGEST_LENGTH; i++) {
 		std::sscanf(md5chr + (i * 2), "%02x", &expected[i]);
 	}
+	
+	logPrintf("\ncStr: %s\n", md5chr);
+	gfxFlushBuffers();
 
 	// Calculate MD5 hash of downloaded archive
 	md5_state_t state;
