@@ -202,7 +202,6 @@ std::string getVersion(char* payloadData, size_t payloadSize) {
 			else if ((payloadData[offset] == 0x20) && 
 				 ((offset+1 < payloadSize) && (payloadData[offset+1] == 0x63)) && 
 				 (state >= STATE_MINOR) && (offset != lastOffset)) {
-				offset--;
 				regexFound = true;
 			}
 			else {
