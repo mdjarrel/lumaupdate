@@ -2,6 +2,7 @@
 
 #include "utils.h"
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 std::string getCommit(std::string commitString) {
@@ -19,6 +20,13 @@ const std::string LumaVersion::toString(bool printBranch) const {
 		currentVersionStr += "-" + getCommit(commit);
 	
 	return currentVersionStr;
+}
+
+template< typename T > std::string to_hex( T i )
+{
+  std::stringstream stream;
+  stream << std::hex << i;
+  return stream.str();
 }
 
 /* Luma3DS 0x2e svc version struct */
@@ -66,6 +74,28 @@ LumaVersion versionSvc() {
 
 	logPrintf("%s\n", version.toString().c_str());
 	return version;
+}
+
+LumaVersion versionSvcGetSystemInfo() {
+	LumaVersion ver;
+	s64 version;
+	// Get SystemVersion Maj.Min.Build
+	svcGetSystemInfo(&version, 0x10000, 0);
+	if(!version)
+		return LumaVersion{};
+	int major = version >> 24;
+	int minor = version >> 16;
+	std::string smajor = std::to_string(major);
+	std::string sminor = std::to_string(minor);
+	ver.release = "Luma3DS v" + smajor + "." + sminor;
+	// Get Commit Hash
+	svcGetSystemInfo(&version, 0x10000, 1);
+	ver.commit = to_hex(version);
+	// Get Release Flag
+	svcGetSystemInfo(&version, 0x10000, 0x200);
+	ver.isDev = version == 0x01;
+	logPrintf("%s\n", ver.toString().c_str());
+	return ver;
 }
 
 LumaVersion versionMemsearch(const std::string& path) {
