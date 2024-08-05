@@ -37,6 +37,7 @@
   <ghost@aladdin.com>.  Other authors are noted in the change history
   that follows (in reverse chronological order):
 
+  2022-08-22 mdj Replaced magic number '16' with MD5_DIGEST_LENGTH
   2002-04-13 lpd Removed support for non-ANSI compilers; removed
 	references to Ghostscript; clarified derivation from RFC 1321;
 	now handles byte order either statically or dynamically.
